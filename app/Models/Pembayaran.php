@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pembayaran extends Model
 {
@@ -18,7 +19,7 @@ class Pembayaran extends Model
         'status',
     ];
 
-    public function pesanan()
+    public function pesanan(): BelongsTo
     {
         return $this->belongsTo(Pesanan::class, 'pesanan_id');
     }
