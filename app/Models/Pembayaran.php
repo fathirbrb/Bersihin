@@ -19,10 +19,6 @@ class Pembayaran extends Model
         'status',
     ];
 
-    // ──────────────────────────────────────
-    // Relationships
-    // ──────────────────────────────────────
-
     public function pesanan(): BelongsTo
     {
         return $this->belongsTo(Pesanan::class, 'pesanan_id');

@@ -32,25 +32,16 @@ class User extends Authenticatable
         ];
     }
 
-    // ──────────────────────────────────────
-    // Relationships
-    // ──────────────────────────────────────
-
-    // Pesanan yang dibuat sebagai pelanggan
     public function pesananPelanggan(): HasMany
     {
         return $this->hasMany(Pesanan::class, 'pelanggan_id');
     }
 
-    // Pesanan yang dikerjakan sebagai petugas
     public function pesananPetugas(): HasMany
     {
         return $this->hasMany(Pesanan::class, 'petugas_id');
     }
 
-    // ──────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────
 
     public function isRole(string $role): bool
     {

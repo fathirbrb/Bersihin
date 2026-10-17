@@ -11,13 +11,6 @@ use Illuminate\View\View;
 
 class PelangganPesananController extends Controller
 {
-    // ──────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────
-
-    /**
-     * Pastikan user login sebagai pelanggan.
-     */
     private function cekPelanggan(): void
     {
         if (Auth::user()->role !== 'pelanggan') {
@@ -25,13 +18,6 @@ class PelangganPesananController extends Controller
         }
     }
 
-    // ──────────────────────────────────────
-    // CRUD
-    // ──────────────────────────────────────
-
-    /**
-     * Tampilkan daftar pesanan milik pelanggan.
-     */
     public function index(): View
     {
         $this->cekPelanggan();
@@ -45,9 +31,6 @@ class PelangganPesananController extends Controller
         return view('pelanggan.pesanan.index', compact('pesanan'));
     }
 
-    /**
-     * Form pemesanan baru.
-     */
     public function create(): View
     {
         $this->cekPelanggan();
@@ -57,9 +40,6 @@ class PelangganPesananController extends Controller
         return view('pelanggan.pesanan.create', compact('paketLayanan'));
     }
 
-    /**
-     * Simpan pesanan baru.
-     */
     public function store(StorePesananRequest $request): RedirectResponse
     {
         $paket = PaketLayanan::findOrFail($request->paket_layanan_id);
@@ -80,9 +60,6 @@ class PelangganPesananController extends Controller
             ->with('success', 'Pesanan berhasil dibuat dan menunggu petugas.');
     }
 
-    /**
-     * Detail pesanan.
-     */
     public function show(int $id): View
     {
         $this->cekPelanggan();
@@ -94,9 +71,6 @@ class PelangganPesananController extends Controller
         return view('pelanggan.pesanan.show', compact('pesanan'));
     }
 
-    /**
-     * Batalkan pesanan (hanya status 'menunggu').
-     */
     public function batalkan(int $id): RedirectResponse
     {
         $this->cekPelanggan();

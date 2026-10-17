@@ -27,9 +27,6 @@ class PaketLayanan extends Model
         ];
     }
 
-    // ──────────────────────────────────────
-    // Relationships
-    // ──────────────────────────────────────
 
     public function pesanan(): HasMany
     {

@@ -11,9 +11,6 @@ use Illuminate\View\View;
 
 class PelangganUlasanController extends Controller
 {
-    // ──────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────
 
     private function cekPelanggan(): void
     {
@@ -22,13 +19,7 @@ class PelangganUlasanController extends Controller
         }
     }
 
-    // ──────────────────────────────────────
-    // CRUD
-    // ──────────────────────────────────────
 
-    /**
-     * Daftar ulasan yang pernah ditulis pelanggan.
-     */
     public function index(): View
     {
         $this->cekPelanggan();
@@ -43,9 +34,7 @@ class PelangganUlasanController extends Controller
         return view('pelanggan.ulasan.index', compact('ulasan'));
     }
 
-    /**
-     * Form tulis ulasan untuk pesanan yang sudah selesai.
-     */
+
     public function create(int $pesananId): View
     {
         $this->cekPelanggan();
@@ -54,7 +43,6 @@ class PelangganUlasanController extends Controller
             ->where('status', 'selesai')
             ->findOrFail($pesananId);
 
-        // Cek apakah sudah pernah memberikan ulasan
         if ($pesanan->ulasan) {
             abort(409, 'Pesanan ini sudah memiliki ulasan.');
         }
@@ -62,16 +50,12 @@ class PelangganUlasanController extends Controller
         return view('pelanggan.ulasan.create', compact('pesanan'));
     }
 
-    /**
-     * Simpan ulasan baru.
-     */
     public function store(StoreUlasanRequest $request, int $pesananId): RedirectResponse
     {
         $pesanan = Pesanan::where('pelanggan_id', Auth::id())
             ->where('status', 'selesai')
             ->findOrFail($pesananId);
 
-        // Guard: 1 pesanan = 1 ulasan
         if ($pesanan->ulasan) {
             return redirect()
                 ->back()
@@ -89,9 +73,6 @@ class PelangganUlasanController extends Controller
             ->with('success', 'Ulasan berhasil dikirim. Terima kasih!');
     }
 
-    /**
-     * Hapus ulasan milik sendiri.
-     */
     public function destroy(int $id): RedirectResponse
     {
         $this->cekPelanggan();

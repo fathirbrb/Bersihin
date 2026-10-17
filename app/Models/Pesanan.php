@@ -33,10 +33,6 @@ class Pesanan extends Model
         ];
     }
 
-    // ──────────────────────────────────────
-    // Relationships
-    // ──────────────────────────────────────
-
     public function pelanggan(): BelongsTo
     {
         return $this->belongsTo(User::class, 'pelanggan_id');

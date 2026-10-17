@@ -9,7 +9,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Halaman khusus role petugas
 Route::middleware('auth')->prefix('petugas')->name('petugas.')->group(function () {
     Route::get('/dashboard', [PetugasController::class, 'dashboard'])->name('dashboard');
     Route::get('/pesanan-masuk', [PetugasController::class, 'pesananMasuk'])->name('pesanan-masuk');
