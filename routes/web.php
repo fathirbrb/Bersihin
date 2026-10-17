@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PelangganPesananController;
 use App\Http\Controllers\PelangganUlasanController;
 use App\Http\Controllers\PetugasController;
@@ -37,3 +38,10 @@ Route::middleware('auth')->prefix('pelanggan')->name('pelanggan.')->group(functi
     Route::delete('/ulasan/{id}', [PelangganUlasanController::class, 'destroy'])->name('ulasan.destroy');
 });
 
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/paket', [AdminController::class, 'indexPaket'])->name('paket.index');
+    Route::put('/paket/{paketLayanan}', [AdminController::class, 'updatePaket'])->name('paket.update');
+    Route::get('/pesanan', [AdminController::class, 'indexPesanan'])->name('pesanan.index');
+    Route::get('/pembayaran', [AdminController::class, 'indexPembayaran'])->name('pembayaran.index');
+    Route::put('/pembayaran/{id}/status', [AdminController::class, 'updateStatusPembayaran'])->name('pembayaran.status');
+});
