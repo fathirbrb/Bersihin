@@ -178,17 +178,18 @@ class PetugasController extends Controller
     // Cek jam tumpang tindih di tanggal sama
     private function jadwalBentrok($pesanan)
     {
-        $mulai = Carbon::parse($pesanan->tanggal . ' ' . $pesanan->jam_mulai);
+        $tanggal = $pesanan->tanggal->format('Y-m-d');
+        $mulai = Carbon::parse($tanggal . ' ' . $pesanan->jam_mulai);
         $selesai = $mulai->copy()->addHours($pesanan->paketLayanan->estimasi_durasi_jam);
 
         $jadwalLain = Pesanan::with('paketLayanan')
             ->where('petugas_id', Auth::id())
-            ->where('tanggal', $pesanan->tanggal)
+            ->whereDate('tanggal', $tanggal)
             ->whereIn('status', ['diterima', 'dikerjakan'])
             ->get();
 
         foreach ($jadwalLain as $item) {
-            $mulaiLain = Carbon::parse($item->tanggal . ' ' . $item->jam_mulai);
+            $mulaiLain = Carbon::parse($tanggal . ' ' . $item->jam_mulai);
             $selesaiLain = $mulaiLain->copy()->addHours($item->paketLayanan->estimasi_durasi_jam);
 
             if ($mulai < $selesaiLain && $selesai > $mulaiLain) {
