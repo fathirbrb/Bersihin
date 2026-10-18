@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PelangganPembayaranController;
 use App\Http\Controllers\PelangganPesananController;
 use App\Http\Controllers\PelangganUlasanController;
 use App\Http\Controllers\PetugasController;
@@ -30,6 +31,9 @@ Route::middleware('auth')->prefix('pelanggan')->name('pelanggan.')->group(functi
     Route::post('/pesanan', [PelangganPesananController::class, 'store'])->name('pesanan.store');
     Route::get('/pesanan/{id}', [PelangganPesananController::class, 'show'])->name('pesanan.show');
     Route::post('/pesanan/{id}/batalkan', [PelangganPesananController::class, 'batalkan'])->name('pesanan.batalkan');
+
+    // Pembayaran
+    Route::post('/pesanan/{pesananId}/pembayaran', [PelangganPembayaranController::class, 'store'])->name('pembayaran.store');
 
     // Ulasan
     Route::get('/ulasan', [PelangganUlasanController::class, 'index'])->name('ulasan.index');
