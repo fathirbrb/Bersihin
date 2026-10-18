@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PetugasController extends Controller
 {
-    // Ringkasan statistik untuk dashboard petugas
+    // Pesanan berikutnya dan ringkasan petugas
     public function dashboard()
     {
         $this->cekPetugas();
@@ -32,8 +32,16 @@ class PetugasController extends Controller
             $query->where('petugas_id', $petugas->id);
         })->avg('rating');
 
+        $pesananBerikutnya = Pesanan::with(['pelanggan', 'paketLayanan'])
+            ->where('petugas_id', $petugas->id)
+            ->whereIn('status', ['diterima', 'dikerjakan'])
+            ->orderBy('tanggal')
+            ->orderBy('jam_mulai')
+            ->first();
+
         return view('petugas.dashboard', compact(
             'petugas',
+            'pesananBerikutnya',
             'jumlahPesananMasuk',
             'jumlahDikerjakan',
             'jumlahSelesai',
@@ -48,7 +56,7 @@ class PetugasController extends Controller
 
         if (Auth::user()->status_verifikasi != 'terverifikasi') {
             return redirect()->route('petugas.dashboard')
-                ->with('error', 'Akun kamu belum diverifikasi admin.');
+                ->with('error', 'Akunmu lagi dicek admin. Begitu beres, kamu bisa ambil pesanan.');
         }
 
         $pesanan = Pesanan::with(['pelanggan', 'paketLayanan'])
@@ -99,17 +107,17 @@ class PetugasController extends Controller
         $this->cekPetugas();
 
         if (Auth::user()->status_verifikasi != 'terverifikasi') {
-            return redirect()->back()->with('error', 'Akun kamu belum diverifikasi admin.');
+            return redirect()->back()->with('error', 'Akunmu lagi dicek admin. Begitu beres, kamu bisa ambil pesanan.');
         }
 
         $pesanan = Pesanan::with('paketLayanan')->findOrFail($id);
 
         if ($pesanan->status != 'menunggu' || $pesanan->petugas_id != null) {
-            return redirect()->back()->with('error', 'Pesanan ini sudah tidak tersedia.');
+            return redirect()->back()->with('error', 'Pesanan ini sudah diambil petugas lain.');
         }
 
         if ($this->jadwalBentrok($pesanan)) {
-            return redirect()->back()->with('error', 'Jadwal bentrok dengan pesanan kamu yang lain.');
+            return redirect()->back()->with('error', 'Jamnya bentrok dengan pesanan kamu yang lain di hari itu.');
         }
 
         $pesanan->update([
@@ -117,7 +125,10 @@ class PetugasController extends Controller
             'status' => 'diterima',
         ]);
 
-        return redirect()->route('petugas.pesanan-saya')->with('success', 'Pesanan berhasil diterima.');
+        $jadwal = $pesanan->tanggal->translatedFormat('l, d F') . ' jam ' . str_replace(':', '.', substr($pesanan->jam_mulai, 0, 5));
+
+        return redirect()->route('petugas.pesanan.show', $pesanan->id)
+            ->with('success', 'Pesanan kamu ambil. Datang ' . $jadwal . '.');
     }
 
     // Status diterima menjadi dikerjakan
@@ -128,12 +139,12 @@ class PetugasController extends Controller
         $pesanan = Pesanan::where('petugas_id', Auth::id())->findOrFail($id);
 
         if ($pesanan->status != 'diterima') {
-            return redirect()->back()->with('error', 'Status pesanan tidak bisa diubah ke dikerjakan.');
+            return redirect()->back()->with('error', 'Pesanan ini belum bisa dimulai.');
         }
 
         $pesanan->update(['status' => 'dikerjakan']);
 
-        return redirect()->back()->with('success', 'Status pesanan diubah menjadi dikerjakan.');
+        return redirect()->back()->with('success', 'Oke, pesanan sedang dikerjakan. Tekan Tandai beres kalau sudah selesai.');
     }
 
     // Status dikerjakan menjadi selesai
@@ -144,12 +155,12 @@ class PetugasController extends Controller
         $pesanan = Pesanan::where('petugas_id', Auth::id())->findOrFail($id);
 
         if ($pesanan->status != 'dikerjakan') {
-            return redirect()->back()->with('error', 'Status pesanan tidak bisa diubah ke selesai.');
+            return redirect()->back()->with('error', 'Pesanan ini belum bisa ditandai beres.');
         }
 
         $pesanan->update(['status' => 'selesai']);
 
-        return redirect()->back()->with('success', 'Pesanan selesai dikerjakan.');
+        return redirect()->back()->with('success', 'Mantap, pesanan beres.');
     }
 
     // Ulasan dari pesanan yang dikerjakan petugas
