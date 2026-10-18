@@ -39,6 +39,8 @@ Route::middleware('auth')->prefix('pelanggan')->name('pelanggan.')->group(functi
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/petugas', [AdminController::class, 'indexPetugas'])->name('petugas.index');
+    Route::put('/petugas/{id}/verifikasi', [AdminController::class, 'updateVerifikasiPetugas'])->name('petugas.verifikasi');
     Route::get('/paket', [AdminController::class, 'indexPaket'])->name('paket.index');
     Route::put('/paket/{paketLayanan}', [AdminController::class, 'updatePaket'])->name('paket.update');
     Route::get('/pesanan', [AdminController::class, 'indexPesanan'])->name('pesanan.index');
