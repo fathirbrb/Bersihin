@@ -14,16 +14,21 @@ class UserFactory extends Factory
 {
     protected static ?string $password;
 
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [
-            'nama'               => fake()->name(),
-            'email'              => fake()->unique()->safeEmail(),
-            'password'           => static::$password ??= Hash::make('password'),
-            'no_hp'              => fake()->numerify('08##########'),
-            'role'               => 'pelanggan',
-            'status_verifikasi'  => 'terverifikasi',
-            'remember_token'     => Str::random(10),
+            'nama'              => fake()->name(),
+            'email'             => fake()->unique()->safeEmail(),
+            'password'          => static::$password ??= Hash::make('password'),
+            'no_hp'             => fake()->numerify('08##########'),
+            'role'              => 'pelanggan',
+            'status_verifikasi' => 'terverifikasi',
+            'remember_token'    => Str::random(10),
         ];
     }
 
@@ -31,8 +36,8 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->state(fn () => [
-            'role'             => 'admin',
-            'status_verifikasi'=> 'terverifikasi',
+            'role'              => 'admin',
+            'status_verifikasi' => 'terverifikasi',
         ]);
     }
 
@@ -40,8 +45,8 @@ class UserFactory extends Factory
     public function petugas(): static
     {
         return $this->state(fn () => [
-            'role'             => 'petugas',
-            'status_verifikasi'=> 'terverifikasi',
+            'role'              => 'petugas',
+            'status_verifikasi' => 'terverifikasi',
         ]);
     }
 
@@ -49,8 +54,8 @@ class UserFactory extends Factory
     public function petugasMenunggu(): static
     {
         return $this->state(fn () => [
-            'role'             => 'petugas',
-            'status_verifikasi'=> 'menunggu',
+            'role'              => 'petugas',
+            'status_verifikasi' => 'menunggu',
         ]);
     }
 }

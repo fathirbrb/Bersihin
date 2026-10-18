@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Daftarkan alias 'role' untuk middleware EnsureRole
+        // Alias 'role' untuk middleware EnsureRole (menggantikan cekPetugas/cekPelanggan di controller)
         $middleware->alias([
             'role' => EnsureRole::class,
         ]);

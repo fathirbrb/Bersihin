@@ -8,14 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * EnsureRole — middleware terpusat pengecekan role.
+ * Menggantikan cekPetugas(), cekPelanggan() di controller lama.
  *
- * Pemakaian di routes:
- *   ->middleware('role:admin')
- *   ->middleware('role:petugas')
- *   ->middleware('role:pelanggan')
- *
- * Menggantikan fungsi private cekPetugas(), cekPelanggan(), dan cek_admin()
- * yang sebelumnya ada di masing-masing controller.
+ * Pemakaian: ->middleware('role:admin') / 'role:petugas' / 'role:pelanggan'
  */
 class EnsureRole
 {
@@ -23,14 +18,11 @@ class EnsureRole
     {
         $user = $request->user();
 
-        // Seharusnya sudah difilter middleware auth, tapi aman untuk dicek ulang
         if (!$user) {
             return redirect()->route('login');
         }
 
-        // Cek apakah role user ada di daftar role yang diizinkan
         if (!in_array($user->role, $roles, true)) {
-            // Arahkan ke halaman yang sesuai role user sendiri, bukan 403 mentah
             return match ($user->role) {
                 'admin'     => redirect()->route('admin.paket.index')
                                 ->with('error', 'Kamu tidak punya akses ke halaman itu.'),
