@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PaketLayanan;
 use App\Models\Pembayaran;
 use App\Models\Pesanan;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,24 +34,38 @@ class AdminController extends Controller
     //verif petugas F-02
     public function indexPetugas()
     {
-        $petugas = User::where('role', 'petugas')->get();
+        $redirect = $this->cekAdmin();
+
+        if ($redirect) {
+            return $redirect;
+        }
+
+        $petugas = User::where('role', 'petugas')->orderBy('created_at', 'desc')->get();
+
         return view('admin.petugas.index', compact('petugas'));
     }
-    
+
     public function updateVerifikasiPetugas(Request $request, $id)
     {
+        $redirect = $this->cekAdmin();
+
+        if ($redirect) {
+            return $redirect;
+        }
+
         $request->validate([
-            'status_verifikasi' => 'required|in:terverifikasi,ditolak,pending',
+            'status_verifikasi' => 'required|in:menunggu,terverifikasi,ditolak',
         ]);
-    
+
         $petugas = User::where('role', 'petugas')->findOrFail($id);
+
         $petugas->update([
-            'status_verifikasi' => $request->status_verifikasi
+            'status_verifikasi' => $request->status_verifikasi,
         ]);
-    
+
         return redirect()->back()->with('success', 'Status verifikasi petugas berhasil diperbarui.');
     }
-    
+
     //kelola harga dan deskripsi F-03
     public function indexPaket()
     {
