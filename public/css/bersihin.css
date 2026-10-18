@@ -1,0 +1,302 @@
+/* ============================================================
+   BERSIHIN — Design System "Ember"
+   Dibuat oleh Orang 1 (Login & Setup) untuk dipakai bersama
+   oleh Orang 2 (admin), Orang 3 (pelanggan), Orang 4 (petugas)
+   ============================================================ */
+
+/* ─── Token Warna ─────────────────────────────────────────── */
+:root {
+    --ember:        #2453D8;   /* aksi utama, link */
+    --ember-tua:    #1A3FAE;   /* hover tombol utama */
+    --ember-muda:   #EAF0FF;   /* kartu/latar sekunder */
+    --tinta:        #10183A;   /* teks judul */
+    --tinta-2:      #5A6175;   /* teks sekunder */
+    --lantai:       #F4F6FB;   /* latar halaman */
+    --isian:        #ECEFF6;   /* latar input */
+    --bahaya:       #B42318;   /* pesan error */
+    --bahaya-muda:  #FDECEA;   /* latar pesan error */
+    --sukses:       #0f6b3c;
+    --sukses-muda:  #d1fae5;
+
+    /* Shape */
+    --r-kontrol:    14px;      /* radius input & tombol */
+    --r-kartu:      16px;
+    --r-kecil:      8px;
+
+    /* Spacing */
+    --gap-xs:   4px;
+    --gap-sm:   8px;
+    --gap-md:   16px;
+    --gap-lg:   24px;
+    --gap-xl:   40px;
+
+    /* Shadow */
+    --bayangan-kartu: 0 2px 12px rgba(36, 83, 216, 0.08);
+    --bayangan-fokus: 0 0 0 3px rgba(36, 83, 216, 0.20);
+}
+
+/* ─── Reset & Base ────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html { font-size: 16px; }
+
+body {
+    font-family: 'Lexend', system-ui, -apple-system, sans-serif;
+    background: var(--lantai);
+    color: var(--tinta);
+    line-height: 1.6;
+    min-height: 100dvh;
+}
+
+a { color: var(--ember); text-decoration: none; }
+a:hover { color: var(--ember-tua); text-decoration: underline; }
+
+/* ─── Tombol ──────────────────────────────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    height: 52px;
+    padding: 0 var(--gap-lg);
+    border: none;
+    border-radius: var(--r-kontrol);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, opacity 0.15s, box-shadow 0.15s;
+    white-space: nowrap;
+}
+
+.btn-utama {            /* aksi utama — satu per layar */
+    background: var(--ember);
+    color: #fff;
+    width: 100%;
+}
+.btn-utama:hover {
+    background: var(--ember-tua);
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-sekunder {         /* aksi kedua */
+    background: var(--ember-muda);
+    color: var(--ember);
+}
+.btn-sekunder:hover {
+    background: #d6e3ff;
+    color: var(--ember-tua);
+    text-decoration: none;
+}
+
+.btn-bahaya {
+    background: var(--bahaya);
+    color: #fff;
+}
+.btn-bahaya:hover { opacity: 0.88; }
+
+.btn-abu {
+    background: #e4e7ef;
+    color: var(--tinta-2);
+}
+.btn-abu:hover { background: #d5d9e5; }
+
+/* Ukuran kecil (untuk aksi inline tabel) */
+.btn-sm {
+    height: 36px;
+    padding: 0 var(--gap-md);
+    font-size: 0.875rem;
+    border-radius: var(--r-kecil);
+}
+
+/* ─── Input & Form ────────────────────────────────────────── */
+.form-grup { margin-bottom: var(--gap-md); }
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--tinta);
+    margin-bottom: var(--gap-xs);
+}
+
+.form-kontrol {
+    display: block;
+    width: 100%;
+    height: 52px;
+    padding: 0 var(--gap-md);
+    background: var(--isian);
+    border: 1.5px solid transparent;
+    border-radius: var(--r-kontrol);
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--tinta);
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-kontrol:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--ember);
+    box-shadow: var(--bayangan-fokus);
+}
+
+.form-kontrol.is-error {
+    border-color: var(--bahaya);
+    background: #fff;
+}
+.form-kontrol.is-error:focus {
+    box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.18);
+}
+
+textarea.form-kontrol {
+    height: auto;
+    min-height: 100px;
+    padding: var(--gap-md);
+    resize: vertical;
+}
+
+select.form-kontrol { appearance: none; cursor: pointer; }
+
+.pesan-error {
+    margin-top: var(--gap-xs);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--bahaya);
+}
+
+/* ─── Alert / Flash ───────────────────────────────────────── */
+.alert {
+    padding: var(--gap-sm) var(--gap-md);
+    border-radius: var(--r-kecil);
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: var(--gap-md);
+}
+.alert-sukses { background: var(--sukses-muda); color: var(--sukses); }
+.alert-bahaya  { background: var(--bahaya-muda); color: var(--bahaya); }
+.alert-info    { background: var(--ember-muda);  color: var(--ember-tua); }
+
+/* ─── Kartu ───────────────────────────────────────────────── */
+.kartu {
+    background: #fff;
+    border-radius: var(--r-kartu);
+    box-shadow: var(--bayangan-kartu);
+    padding: var(--gap-lg);
+}
+
+/* ─── Badge ───────────────────────────────────────────────── */
+.badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.badge-menunggu    { background: #fef3c7; color: #92400e; }
+.badge-diterima    { background: #dbeafe; color: #1e40af; }
+.badge-dikerjakan  { background: #e0e7ff; color: #3730a3; }
+.badge-selesai     { background: var(--sukses-muda); color: var(--sukses); }
+.badge-dibatalkan  { background: var(--bahaya-muda); color: var(--bahaya); }
+.badge-terverifikasi { background: var(--sukses-muda); color: var(--sukses); }
+
+/* ─── Tabel ───────────────────────────────────────────────── */
+.tabel-wrap { overflow-x: auto; }
+.tabel { width: 100%; border-collapse: collapse; }
+.tabel th, .tabel td {
+    padding: 12px var(--gap-md);
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+.tabel th {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--tinta-2);
+    background: var(--lantai);
+}
+.tabel tbody tr:hover { background: var(--ember-muda); }
+
+/* ─── Navbar (bisa diextend per role) ────────────────────── */
+.navbar {
+    background: var(--ember);
+    padding: 0 var(--gap-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    box-shadow: 0 2px 8px rgba(36, 83, 216, 0.20);
+}
+.navbar-brand {
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+}
+.navbar-nav {
+    display: flex;
+    gap: var(--gap-lg);
+    list-style: none;
+}
+.navbar-nav a {
+    color: rgba(255,255,255,0.82);
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.navbar-nav a:hover,
+.navbar-nav a.aktif { color: #fff; }
+
+/* ─── Layout Utama ────────────────────────────────────────── */
+.kontainer {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 var(--gap-md);
+}
+
+.halaman { padding: var(--gap-xl) var(--gap-md); }
+
+/* ─── Judul Halaman ───────────────────────────────────────── */
+.judul-halaman {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--tinta);
+    margin-bottom: var(--gap-lg);
+}
+
+/* ─── Empty State ─────────────────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: 60px var(--gap-md);
+    color: var(--tinta-2);
+}
+.empty-state p { margin-top: var(--gap-sm); font-size: 0.95rem; }
+
+/* ─── Utilitas ────────────────────────────────────────────── */
+.text-bahaya  { color: var(--bahaya); }
+.text-sekunder { color: var(--tinta-2); font-size: 0.9rem; }
+.mt-sm { margin-top: var(--gap-sm); }
+.mt-md { margin-top: var(--gap-md); }
+.mt-lg { margin-top: var(--gap-lg); }
+.flex  { display: flex; }
+.flex-gap-sm { gap: var(--gap-sm); }
+.flex-gap-md { gap: var(--gap-md); }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+
+/* ─── Responsif Mobile-first ──────────────────────────────── */
+@media (max-width: 480px) {
+    .navbar { padding: 0 var(--gap-md); }
+    .kartu  { padding: var(--gap-md); }
+    .tabel th, .tabel td { padding: 10px var(--gap-sm); font-size: 0.875rem; }
+}
