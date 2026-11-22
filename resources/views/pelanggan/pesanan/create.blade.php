@@ -1,57 +1,70 @@
 @extends('layouts.pelanggan')
 
-@section('title', 'Buat Pesanan Baru')
+@section('title', 'Pesan petugas')
+@section('main-class', 'sempit')
 
 @section('content')
-    <h1 class="page-title">Buat Pesanan Baru</h1>
+<div class="kepala">
+    <h1>Pesan petugas</h1>
+    <p>Bayar setelah pesanan dibuat.</p>
+</div>
 
-    <div class="card">
-        <form action="{{ route('pelanggan.pesanan.store') }}" method="POST">
-            @csrf
+<form action="{{ route('pelanggan.pesanan.store') }}" method="POST">
+    @csrf
 
-            <div class="form-group">
-                <label for="paket_layanan_id">Paket Layanan</label>
-                <select name="paket_layanan_id" id="paket_layanan_id" class="form-control" required>
-                    <option value="">— Pilih paket —</option>
-                    @foreach($paketLayanan as $paket)
-                        <option value="{{ $paket->id }}" {{ old('paket_layanan_id') == $paket->id ? 'selected' : '' }}>
-                            {{ $paket->nama_paket }} — Rp{{ number_format($paket->harga, 0, ',', '.') }}
-                            (± {{ $paket->estimasi_durasi_jam }} jam)
-                        </option>
-                    @endforeach
-                </select>
-                @error('paket_layanan_id') <p class="text-danger">{{ $message }}</p> @enderror
-            </div>
+    <fieldset class="pilihan isian">
+        <legend>Paket</legend>
+        @foreach($paketLayanan as $paket)
+            <label class="opsi">
+                <input type="radio" name="paket_layanan_id" value="{{ $paket->id }}" data-harga="Rp{{ number_format($paket->harga, 0, ',', '.') }}" {{ (old('paket_layanan_id', $selectedPaketId ?? '') == $paket->id) || ($loop->first && !old('paket_layanan_id') && empty($selectedPaketId)) ? 'checked' : '' }} required>
+                <span>
+                    <span class="judul-baris">{{ $paket->nama_paket }}</span>
+                    <span class="sub-baris">{{ $paket->deskripsi }}</span>
+                </span>
+                <span style="text-align:right;flex:none;">
+                    <span class="harga" style="display:block;">Rp{{ number_format($paket->harga, 0, ',', '.') }}</span>
+                    <span class="sub-baris">± {{ $paket->estimasi_durasi_jam }} jam</span>
+                </span>
+            </label>
+        @endforeach
+        @error('paket_layanan_id')
+            <p class="galat">{{ $message }}</p>
+        @enderror
+    </fieldset>
 
-            <div class="form-group">
-                <label for="alamat">Alamat Lengkap</label>
-                <textarea name="alamat" id="alamat" class="form-control" required placeholder="Masukkan alamat lengkap...">{{ old('alamat') }}</textarea>
-                @error('alamat') <p class="text-danger">{{ $message }}</p> @enderror
-            </div>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                <div class="form-group">
-                    <label for="tanggal">Tanggal</label>
-                    <input type="date" name="tanggal" id="tanggal" class="form-control" value="{{ old('tanggal') }}" required>
-                    @error('tanggal') <p class="text-danger">{{ $message }}</p> @enderror
-                </div>
-                <div class="form-group">
-                    <label for="jam_mulai">Jam Mulai</label>
-                    <input type="time" name="jam_mulai" id="jam_mulai" class="form-control" value="{{ old('jam_mulai') }}" required>
-                    @error('jam_mulai') <p class="text-danger">{{ $message }}</p> @enderror
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="catatan">Catatan (opsional)</label>
-                <textarea name="catatan" id="catatan" class="form-control" placeholder="Contoh: kunci di bawah pot bunga...">{{ old('catatan') }}</textarea>
-                @error('catatan') <p class="text-danger">{{ $message }}</p> @enderror
-            </div>
-
-            <div style="display:flex; gap:.75rem; margin-top:1rem;">
-                <button type="submit" class="btn btn-primary">Pesan Sekarang</button>
-                <a href="{{ route('pelanggan.pesanan.index') }}" class="btn btn-secondary">Batal</a>
-            </div>
-        </form>
+    <div class="isian {{ $errors->has('alamat') ? 'isian-salah' : '' }}">
+        <label for="alamat">Alamat</label>
+        <textarea id="alamat" name="alamat" rows="3" autocomplete="street-address" placeholder="Jalan, nomor rumah, kelurahan" required>{{ old('alamat') }}</textarea>
+        @error('alamat')
+            <p class="galat" id="galat-alamat">{{ $message }}</p>
+        @enderror
     </div>
+
+    <div class="isian-dua">
+        <div class="isian {{ $errors->has('tanggal') ? 'isian-salah' : '' }}">
+            <label for="tanggal">Tanggal</label>
+            <input type="date" id="tanggal" name="tanggal" value="{{ old('tanggal', \Carbon\Carbon::tomorrow()->format('Y-m-d')) }}" min="{{ date('Y-m-d') }}" required>
+            @error('tanggal')
+                <p class="galat">{{ $message }}</p>
+            @enderror
+        </div>
+        <div class="isian {{ $errors->has('jam_mulai') ? 'isian-salah' : '' }}">
+            <label for="jam_mulai">Jam mulai</label>
+            <input type="time" id="jam_mulai" name="jam_mulai" value="{{ old('jam_mulai', '09:00') }}" required>
+            @error('jam_mulai')
+                <p class="galat">{{ $message }}</p>
+            @enderror
+        </div>
+    </div>
+
+    <div class="isian {{ $errors->has('catatan') ? 'isian-salah' : '' }}">
+        <label for="catatan">Catatan <span class="sub-baris" style="display:inline;">(opsional)</span></label>
+        <textarea id="catatan" name="catatan" rows="3" placeholder="Misal: pagar hijau, ada kucing di rumah">{{ old('catatan') }}</textarea>
+        @error('catatan')
+            <p class="galat">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <button type="submit" class="btn btn-utama btn-penuh" id="tombol-pesan">Pesan</button>
+</form>
 @endsection

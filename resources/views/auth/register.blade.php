@@ -1,157 +1,81 @@
 @extends('layouts.auth')
 
-@section('title', 'Daftar Akun')
-@section('meta-deskripsi', 'Buat akun Bersihin untuk memesan layanan kebersihan.')
+@section('title', 'Daftar')
 
 @section('content')
-    <h1 class="auth-judul">Buat akun baru</h1>
-    <p class="auth-subjudul">Sudah punya akun? <a href="{{ route('login') }}">Masuk di sini</a></p>
+<h1>Bikin akun</h1>
+<p class="lead">Sekali daftar, langsung bisa pesan.</p>
 
-    <form action="{{ route('register') }}" method="POST" novalidate>
-        @csrf
+<form action="{{ route('register') }}" method="POST">
+    @csrf
 
-        {{-- Pilih Peran --}}
-        <div class="form-grup">
-            <span class="form-label">Kamu daftar sebagai</span>
-            <div class="role-grup">
-                <div class="role-opsi">
-                    <input
-                        type="radio"
-                        id="role_pelanggan"
-                        name="role"
-                        value="pelanggan"
-                        {{ old('role', 'pelanggan') === 'pelanggan' ? 'checked' : '' }}
-                    >
-                    <label for="role_pelanggan" class="role-label">
-                        <span class="ikon">🏠</span>
-                        Pelanggan
-                        <span style="font-size:0.75rem;font-weight:400;">Pesan layanan</span>
-                    </label>
-                </div>
-                <div class="role-opsi">
-                    <input
-                        type="radio"
-                        id="role_petugas"
-                        name="role"
-                        value="petugas"
-                        {{ old('role') === 'petugas' ? 'checked' : '' }}
-                    >
-                    <label for="role_petugas" class="role-label">
-                        <span class="ikon">🧹</span>
-                        Petugas
-                        <span style="font-size:0.75rem;font-weight:400;">Kerjakan pesanan</span>
-                    </label>
-                </div>
-            </div>
-            @error('role')
-                <p class="pesan-error" role="alert">{{ $message }}</p>
-            @enderror
-
-            {{-- Info petugas menunggu --}}
-            <div id="info-petugas" class="alert alert-info" style="display:none; margin-top:8px; font-size:0.85rem;">
-                ⏳ Akun petugas perlu diverifikasi admin sebelum bisa menerima pesanan. Kamu masih bisa masuk, tapi fitur pesanan baru aktif setelah diverifikasi.
-            </div>
+    <fieldset class="pilihan isian">
+        <legend>Daftar sebagai</legend>
+        <div class="segmen">
+            <label class="opsi">
+                <input type="radio" name="role" value="pelanggan" {{ old('role', 'pelanggan') === 'pelanggan' ? 'checked' : '' }} onchange="toggleRole(false)"> Pelanggan
+            </label>
+            <label class="opsi">
+                <input type="radio" name="role" value="petugas" id="peran-petugas" {{ old('role') === 'petugas' ? 'checked' : '' }} onchange="toggleRole(true)"> Petugas
+            </label>
         </div>
+    </fieldset>
 
-        {{-- Nama Lengkap --}}
-        <div class="form-grup">
-            <label for="nama" class="form-label">Nama Lengkap</label>
-            <input
-                id="nama"
-                type="text"
-                name="nama"
-                value="{{ old('nama') }}"
-                class="form-kontrol @error('nama') is-error @enderror"
-                placeholder="Nama lengkap kamu"
-                autocomplete="name"
-                autofocus
-            >
-            @error('nama')
-                <p class="pesan-error" role="alert">{{ $message }}</p>
-            @enderror
-        </div>
+    <div class="pesan pesan-tunggu" id="catatan-petugas" {{ old('role') === 'petugas' ? '' : 'hidden' }}>
+        Akun petugas perlu diverifikasi admin dulu sebelum bisa menerima pesanan.
+    </div>
 
-        {{-- Email --}}
-        <div class="form-grup">
-            <label for="email" class="form-label">Email</label>
-            <input
-                id="email"
-                type="email"
-                name="email"
-                value="{{ old('email') }}"
-                class="form-kontrol @error('email') is-error @enderror"
-                placeholder="kamu@email.com"
-                autocomplete="email"
-            >
-            @error('email')
-                <p class="pesan-error" role="alert">{{ $message }}</p>
-            @enderror
-        </div>
+    <div class="isian {{ $errors->has('nama') ? 'isian-salah' : '' }}">
+        <label for="nama">Nama lengkap</label>
+        <input type="text" id="nama" name="nama" value="{{ old('nama') }}" autocomplete="name" required autofocus>
+        @error('nama')
+            <p class="galat">{{ $message }}</p>
+        @enderror
+    </div>
 
-        {{-- Nomor HP --}}
-        <div class="form-grup">
-            <label for="no_hp" class="form-label">Nomor HP</label>
-            <input
-                id="no_hp"
-                type="tel"
-                name="no_hp"
-                value="{{ old('no_hp') }}"
-                class="form-kontrol @error('no_hp') is-error @enderror"
-                placeholder="08xx xxxx xxxx"
-                autocomplete="tel"
-            >
-            @error('no_hp')
-                <p class="pesan-error" role="alert">{{ $message }}</p>
-            @enderror
-        </div>
+    <div class="isian {{ $errors->has('email') ? 'isian-salah' : '' }}">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="email" placeholder="nama@email.com" required>
+        @error('email')
+            <p class="galat" id="galat-email">{{ $message }}</p>
+        @enderror
+    </div>
 
-        {{-- Kata Sandi --}}
-        <div class="form-grup">
-            <label for="password" class="form-label">Kata Sandi</label>
-            <input
-                id="password"
-                type="password"
-                name="password"
-                class="form-kontrol @error('password') is-error @enderror"
-                placeholder="Minimal 8 karakter"
-                autocomplete="new-password"
-            >
-            @error('password')
-                <p class="pesan-error" role="alert">{{ $message }}</p>
-            @enderror
-        </div>
+    <div class="isian {{ $errors->has('no_hp') ? 'isian-salah' : '' }}">
+        <label for="no_hp">Nomor HP</label>
+        <input type="tel" id="no_hp" name="no_hp" value="{{ old('no_hp') }}" autocomplete="tel" inputmode="tel" placeholder="08xxxxxxxxxx" required>
+        @error('no_hp')
+            <p class="galat">{{ $message }}</p>
+        @enderror
+    </div>
 
-        {{-- Konfirmasi Kata Sandi --}}
-        <div class="form-grup">
-            <label for="password_confirmation" class="form-label">Konfirmasi Kata Sandi</label>
-            <input
-                id="password_confirmation"
-                type="password"
-                name="password_confirmation"
-                class="form-kontrol"
-                placeholder="Ulangi kata sandi"
-                autocomplete="new-password"
-            >
-        </div>
+    <div class="isian {{ $errors->has('password') ? 'isian-salah' : '' }}">
+        <label for="password">Kata sandi</label>
+        <input type="password" id="password" name="password" autocomplete="new-password" minlength="8" required>
+        <p class="bantu">Minimal 8 karakter.</p>
+        @error('password')
+            <p class="galat">{{ $message }}</p>
+        @enderror
+    </div>
 
-        <button type="submit" class="btn btn-utama" id="btn-daftar">
-            Buat Akun
-        </button>
-    </form>
-@endsection
+    <div class="isian">
+        <label for="password_confirmation">Ulangi kata sandi</label>
+        <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" required>
+    </div>
+
+    <button type="submit" class="btn btn-utama btn-penuh">Daftar</button>
+</form>
+
+<p class="bawah">Sudah punya akun? <a href="{{ route('login') }}">Masuk</a></p>
 
 @push('scripts')
 <script>
-    // Tampilkan info verifikasi saat role petugas dipilih
-    const radioPeran = document.querySelectorAll('input[name="role"]');
-    const infoPetugas = document.getElementById('info-petugas');
-
-    function perbaruiInfoPeran() {
-        const dipilih = document.querySelector('input[name="role"]:checked');
-        infoPetugas.style.display = dipilih?.value === 'petugas' ? 'block' : 'none';
+    function toggleRole(isPetugas) {
+        const info = document.getElementById('catatan-petugas');
+        if (info) {
+            info.hidden = !isPetugas;
+        }
     }
-
-    radioPeran.forEach(r => r.addEventListener('change', perbaruiInfoPeran));
-    perbaruiInfoPeran(); // jalankan saat halaman load
 </script>
 @endpush
+@endsection

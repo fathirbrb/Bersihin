@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PelangganPembayaranController;
 use App\Http\Controllers\PelangganPesananController;
+use App\Http\Controllers\PelangganProfilController;
 use App\Http\Controllers\PelangganUlasanController;
 use App\Http\Controllers\PetugasController;
 use Illuminate\Support\Facades\Route;
@@ -14,16 +15,19 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    if (!auth()->check()) {
-        return redirect()->route('login');
+    if (auth()->check()) {
+        return match (auth()->user()->role) {
+            'admin'     => redirect()->route('admin.paket.index'),
+            'petugas'   => redirect()->route('petugas.dashboard'),
+            'pelanggan' => redirect()->route('pelanggan.beranda'),
+            default     => redirect()->route('login'),
+        };
     }
-    return match (auth()->user()->role) {
-        'admin'     => redirect()->route('admin.paket.index'),
-        'petugas'   => redirect()->route('petugas.dashboard'),
-        'pelanggan' => redirect()->route('pelanggan.pesanan.index'),
-        default     => redirect()->route('login'),
-    };
-});
+    $paketLayanan = \Illuminate\Support\Facades\Schema::hasTable('paket_layanan')
+        ? \App\Models\PaketLayanan::orderBy('harga')->get()
+        : collect();
+    return view('welcome', compact('paketLayanan'));
+})->name('landing');
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +73,9 @@ Route::middleware(['auth', 'role:pelanggan'])
     ->prefix('pelanggan')
     ->name('pelanggan.')
     ->group(function () {
+        // Beranda
+        Route::get('/beranda',                              [PelangganPesananController::class, 'beranda'])->name('beranda');
+
         // Pesanan
         Route::get('/pesanan',                              [PelangganPesananController::class, 'index'])->name('pesanan.index');
         Route::get('/pesanan/buat',                         [PelangganPesananController::class, 'create'])->name('pesanan.create');
@@ -76,7 +83,7 @@ Route::middleware(['auth', 'role:pelanggan'])
         Route::get('/pesanan/{id}',                         [PelangganPesananController::class, 'show'])->name('pesanan.show');
         Route::post('/pesanan/{id}/batalkan',               [PelangganPesananController::class, 'batalkan'])->name('pesanan.batalkan');
 
-        // Pembayaran (dari branch main — Orang 3)
+        // Pembayaran
         Route::post('/pesanan/{pesananId}/pembayaran',      [PelangganPembayaranController::class, 'store'])->name('pembayaran.store');
 
         // Ulasan
@@ -84,6 +91,11 @@ Route::middleware(['auth', 'role:pelanggan'])
         Route::get('/pesanan/{pesananId}/ulasan/buat',      [PelangganUlasanController::class, 'create'])->name('ulasan.create');
         Route::post('/pesanan/{pesananId}/ulasan',          [PelangganUlasanController::class, 'store'])->name('ulasan.store');
         Route::delete('/ulasan/{id}',                       [PelangganUlasanController::class, 'destroy'])->name('ulasan.destroy');
+
+        // Profil
+        Route::get('/profil',                               [PelangganProfilController::class, 'show'])->name('profil');
+        Route::put('/profil',                               [PelangganProfilController::class, 'updateDataDiri'])->name('profil.update');
+        Route::put('/profil/password',                      [PelangganProfilController::class, 'updatePassword'])->name('profil.password');
     });
 
 /*

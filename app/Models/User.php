@@ -18,6 +18,7 @@ class User extends Authenticatable
         'no_hp',
         'role',
         'status_verifikasi',
+        'foto',
     ];
 
     protected $hidden = [
@@ -51,7 +52,7 @@ class User extends Authenticatable
     {
         return match ($this->role) {
             'petugas' => 'petugas.dashboard',
-            'pelanggan' => 'pelanggan.pesanan.index',
+            'pelanggan' => 'pelanggan.beranda',
             default => null,
         };
     }
