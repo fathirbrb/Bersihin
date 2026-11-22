@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Beranda · Bersihin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/bersihin.css">
+</head>
+<body class="app">
+    <header class="bar">
+        <div class="bar-isi">
+            <a href="beranda.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><path d="M6 6.5a7 5 0 0 1 14 0" fill="none" stroke="#2453D8" stroke-width="2"/><path d="M3.5 9h19l-2.2 13.2a2 2 0 0 1-2 1.8H7.7a2 2 0 0 1-2-1.8z" fill="#EAF0FF" stroke="#2453D8" stroke-width="2" stroke-linejoin="round"/><path d="M5.2 15.5h15.6l-1.1 6.6a1 1 0 0 1-1 .9H7.3a1 1 0 0 1-1-.9z" fill="#2453D8"/></svg>
+                bersihin
+            </a>
+            <!-- Tab pelanggan, pindah ke bawah di HP -->
+            <nav aria-label="Menu pelanggan">
+                <ul class="tab">
+                    <li><a href="beranda.html" class="aktif" aria-current="page"><span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg></span>Beranda</a></li>
+                    <li><a href="pesan.html"><span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8a5 4 0 0 1 10 0"/><path d="M4 8h16l-1.8 11.2a1.5 1.5 0 0 1-1.5 1.3H7.3a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M12 11v6M9 14h6"/></svg></span>Pesan</a></li>
+                    <li><a href="pesanan.html"><span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="16" rx="2"/><path d="M9 3.5h6v3H9zM9 11h6M9 15h4"/></svg></span>Pesananku</a></li>
+                    <li><a href="ulasan.html"><span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/></svg></span>Ulasan</a></li>
+                </ul>
+            </nav>
+            <!-- Ke profil, Blade: tampilkan foto kalau ada -->
+            <a href="profil.html" class="avatar" aria-label="Profil Fatirtir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/></svg></a>
+        </div>
+    </header>
+
+    <main>
+        <div class="kepala">
+            <h1>Halo, Fatirtir</h1>
+            <p>Selasa, 27 Oktober 2026</p>
+        </div>
+
+        <!-- Error dari server, varian #gagal -->
+        <div class="pesan pesan-salah" role="alert" data-saat="gagal">Gagal memuat pesanan. Muat ulang halaman.</div>
+
+        <div class="dua-kolom">
+            <section>
+                <h2 class="bagian" data-saat="awal kosong">Lagi jalan</h2>
+                <div class="kartu kartu-fokus" data-saat="awal">
+                    <div class="atas">
+                        <p class="paket">Pembersihan Rutin · 3 jam</p>
+                        <span class="status s-jalan"><span class="m" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i></span>Diterima</span>
+                    </div>
+                    <p class="jam">13.00</p>
+                    <p class="tgl">Rabu, 28 Oktober</p>
+                    <dl class="info">
+                        <dt>Alamat</dt><dd>Jl. Contoh No. 5, Rajabasa, Bandar Lampung</dd>
+                        <dt>Petugas</dt><dd>Rifanjir</dd>
+                        <dt>Bayar</dt><dd><span class="status s-tunggu">Belum dibayar</span></dd>
+                    </dl>
+                    <div class="level">
+                        <div class="tabung" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2" aria-label="Progres pesanan"><span style="width:50%"></span></div>
+                        <div class="label"><b>Diterima, belum mulai</b><span>Langkah 2 dari 4</span></div>
+                    </div>
+                    <!-- Tombol Bayar hilang kalau sudah ada pembayaran -->
+                    <div class="aksi-dua">
+                        <a href="pesanan-detail.html" class="btn btn-kedua">Detail</a>
+                        <a href="pesanan-detail.html#bayar" class="btn btn-utama">Bayar</a>
+                    </div>
+                </div>
+
+                <div class="kosong" data-saat="kosong">
+                    <svg width="48" height="48" viewBox="0 0 26 26" aria-hidden="true"><path d="M6 6.5a7 5 0 0 1 14 0" fill="none" stroke="#2453D8" stroke-width="2"/><path d="M3.5 9h19l-2.2 13.2a2 2 0 0 1-2 1.8H7.7a2 2 0 0 1-2-1.8z" fill="#EAF0FF" stroke="#2453D8" stroke-width="2" stroke-linejoin="round"/></svg>
+                    <b>Embernya masih kosong</b>
+                    <span>Belum ada pesanan yang jalan.</span>
+                    <a href="pesan.html" class="btn btn-utama">Pesan petugas</a>
+                </div>
+            </section>
+
+            <section>
+            <h2 class="bagian">Pesan lagi</h2>
+            <div class="daftar">
+                <a href="pesan.html?paket=9" class="baris">
+                    <span><span class="judul-baris">Pembersihan Rutin</span><span class="sub-baris">± 3 jam</span></span>
+                    <span class="harga">Rp150.000</span>
+                </a>
+                <a href="pesan.html?paket=10" class="baris">
+                    <span><span class="judul-baris">Deep Cleaning</span><span class="sub-baris">± 6 jam</span></span>
+                    <span class="harga">Rp350.000</span>
+                </a>
+                <a href="pesan.html?paket=11" class="baris">
+                    <span><span class="judul-baris">Cuci Sofa dan Kasur</span><span class="sub-baris">± 4 jam</span></span>
+                    <span class="harga">Rp250.000</span>
+                </a>
+                <a href="pesan.html?paket=12" class="baris">
+                    <span><span class="judul-baris">Pembersihan Pascarenovasi</span><span class="sub-baris">± 8 jam</span></span>
+                    <span class="harga">Rp500.000</span>
+                </a>
+            </div>
+            </section>
+        </div>
+    </main>
+    <script src="../assets/mockup.js"></script>
+</body>
+</html>

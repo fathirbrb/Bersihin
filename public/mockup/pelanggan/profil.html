@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Profil · Bersihin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/bersihin.css">
+</head>
+<body class="app">
+    <header class="bar">
+        <div class="bar-isi">
+            <a href="beranda.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><path d="M6 6.5a7 5 0 0 1 14 0" fill="none" stroke="#2453D8" stroke-width="2"/><path d="M3.5 9h19l-2.2 13.2a2 2 0 0 1-2 1.8H7.7a2 2 0 0 1-2-1.8z" fill="#EAF0FF" stroke="#2453D8" stroke-width="2" stroke-linejoin="round"/><path d="M5.2 15.5h15.6l-1.1 6.6a1 1 0 0 1-1 .9H7.3a1 1 0 0 1-1-.9z" fill="#2453D8"/></svg>
+                bersihin
+            </a>
+            <!-- Tab pelanggan, pindah ke bawah di HP -->
+            <nav aria-label="Menu pelanggan">
+                <ul class="tab">
+                    <li><a href="beranda.html"><span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg></span>Beranda</a></li>
+                    <li><a href="pesan.html"><span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8a5 4 0 0 1 10 0"/><path d="M4 8h16l-1.8 11.2a1.5 1.5 0 0 1-1.5 1.3H7.3a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M12 11v6M9 14h6"/></svg></span>Pesan</a></li>
+                    <li><a href="pesanan.html"><span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="16" rx="2"/><path d="M9 3.5h6v3H9zM9 11h6M9 15h4"/></svg></span>Pesananku</a></li>
+                    <li><a href="ulasan.html"><span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/></svg></span>Ulasan</a></li>
+                </ul>
+            </nav>
+            <!-- Ke profil, Blade: tampilkan foto kalau ada -->
+            <a href="profil.html" class="avatar" aria-current="page" aria-label="Profil Fatirtir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/></svg></a>
+        </div>
+    </header>
+
+    <main>
+        <div class="kepala">
+            <h1>Profil</h1>
+            <p class="peran">Pelanggan sejak 18 Oktober 2026</p>
+        </div>
+
+        <div class="pesan pesan-ok" role="status" data-saat="disimpan">Profil disimpan.</div>
+        <div class="pesan pesan-ok" role="status" data-saat="sandi">Kata sandi sudah diganti.</div>
+        <div class="pesan pesan-salah" role="alert" data-saat="salah">Cek lagi isianmu.</div>
+
+        <div class="dua-kolom">
+            <section>
+                <h2 class="bagian">Data diri</h2>
+                <!-- Blade: PUT profil, enctype multipart/form-data -->
+                <form action="profil.html#disimpan" method="get" data-proses="Menyimpan...">
+                    <!-- Foto profil, ikon kalau belum ada foto -->
+                    <div class="profil-foto">
+                        <span class="avatar avatar-besar" id="pratinjau-foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/></svg></span>
+                        <div>
+                            <div class="aksi">
+                                <label class="btn btn-kedua btn-kecil pilih-berkas">Ganti foto<input type="file" id="foto" name="foto" accept="image/jpeg,image/png"></label>
+                                <button type="button" class="btn btn-teks bahaya" id="hapus-foto" hidden>Hapus foto</button>
+                            </div>
+                            <p class="sub-baris">JPG atau PNG, maks. 2 MB.</p>
+                            <input type="hidden" name="hapus_foto" value="0">
+                        </div>
+                    </div>
+
+                    <div class="isian">
+                        <label for="nama">Nama</label>
+                        <input type="text" id="nama" name="nama" value="Fatirtir" autocomplete="name" required>
+                    </div>
+                    <div class="isian" data-saat="awal disimpan sandi">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="fatirtir@bersihin.test" autocomplete="email" required>
+                    </div>
+                    <div class="isian isian-salah" data-saat="salah">
+                        <label for="email-salah">Email</label>
+                        <input type="email" id="email-salah" name="email" value="rifanjir@bersihin.test" autocomplete="email" aria-invalid="true" aria-describedby="galat-email">
+                        <p class="galat" id="galat-email">Email sudah terdaftar.</p>
+                    </div>
+                    <div class="isian">
+                        <label for="no_hp">Nomor HP</label>
+                        <input type="tel" id="no_hp" name="no_hp" value="081200000001" autocomplete="tel" inputmode="tel" required>
+                    </div>
+                    <button type="submit" class="btn btn-utama btn-penuh">Simpan</button>
+                </form>
+            </section>
+            <section>
+                <h2 class="bagian">Kata sandi</h2>
+                <!-- Blade: PUT password -->
+                <form action="profil.html#sandi" method="get" data-proses="Menyimpan...">
+                    <input type="text" name="username" value="fatirtir@bersihin.test" autocomplete="username" hidden>
+                    <div class="isian">
+                        <label for="current_password">Kata sandi sekarang</label>
+                        <input type="password" id="current_password" name="current_password" autocomplete="current-password" required>
+                    </div>
+                    <div class="isian">
+                        <label for="password">Kata sandi baru</label>
+                        <input type="password" id="password" name="password" autocomplete="new-password" minlength="8" required>
+                        <p class="bantu">Minimal 8 karakter.</p>
+                    </div>
+                    <div class="isian">
+                        <label for="password_confirmation">Ulangi kata sandi baru</label>
+                        <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-kedua btn-penuh">Ganti kata sandi</button>
+                </form>
+
+                <!-- Blade: form POST ke route logout -->
+                <form action="../masuk.html" method="get" style="margin-top:40px;">
+                    <button type="submit" class="btn btn-bahaya btn-penuh">Keluar</button>
+                </form>
+            </section>
+        </div>
+    </main>
+    <script src="../assets/mockup.js"></script>
+</body>
+</html>
