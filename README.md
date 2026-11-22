@@ -1,4 +1,4 @@
-# 🧹 Bersihin — Layanan Kebersihan Rumah Profesional
+# 🧹 Bersihin — Layanan Kebersihan Rumah 
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fathirbrb/Bersihin/main/public/mockup/assets/logo.svg" width="64" height="64" alt="Bersihin Logo" onerror="this.style.display='none'">
@@ -131,7 +131,7 @@ php artisan serve
 npm run dev
 ```
 
-Buka peramban dan akses: **[http://localhost:8000](http://localhost:8000)**
+Buka browser dan akses: **[http://localhost:8000](http://localhost:8000)**
 
 ---
 
@@ -207,5 +207,3 @@ Bersihin/
 ```
 
 ---
-
-<p align="center">Dibuat dengan ❤️ oleh <b>Kelompok 4 — Proyek Bersihin</b></p>
