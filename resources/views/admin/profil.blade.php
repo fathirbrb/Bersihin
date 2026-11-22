@@ -40,11 +40,11 @@
                     @error('nama') <p class="galat">{{ $message }}</p> @enderror
                 </div>
 
-                <div class="isian @error('email') isian-salah @enderror">
+                <!--<div class="isian @error('email') isian-salah @enderror">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email', Auth::user()->email) }}" autocomplete="email" required>
+                    <input type="email" id="email" name="email" value="{{ old('email', Auth::user()->email) }}" autocomplete="email" required readonly>
                     @error('email') <p class="galat">{{ $message }}</p> @enderror
-                </div>
+                </div>-->
 
                 <div class="isian @error('no_hp') isian-salah @enderror">
                     <label for="no_hp">Nomor HP</label>
