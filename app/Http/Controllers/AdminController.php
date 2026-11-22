@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
@@ -31,7 +34,129 @@ class AdminController extends Controller
         return null;
     }
 
-    //verif petugas F-02
+    // Beranda Admin
+    public function beranda()
+    {
+        $redirect = $this->cekAdmin();
+        if ($redirect) {
+            return $redirect;
+        }
+
+        $pembayaranMenungguCount = Pembayaran::where('status', 'menunggu')->count();
+        $pembayaranMenungguTerbaru = Pembayaran::with('pesanan.pelanggan')
+            ->where('status', 'menunggu')
+            ->latest()
+            ->first();
+
+        $petugasMenungguCount = User::where('role', 'petugas')
+            ->where('status_verifikasi', 'menunggu')
+            ->count();
+        $petugasMenungguTerbaru = User::where('role', 'petugas')
+            ->where('status_verifikasi', 'menunggu')
+            ->latest()
+            ->first();
+
+        $pesananTerbaru = Pesanan::with(['pelanggan', 'petugas', 'paketLayanan'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $totalPesanan = Pesanan::count();
+        $totalPaket = PaketLayanan::count();
+        $totalPetugasAktif = User::where('role', 'petugas')
+            ->where('status_verifikasi', 'terverifikasi')
+            ->count();
+        $totalPelanggan = User::where('role', 'pelanggan')->count();
+
+        return view('admin.beranda', compact(
+            'pembayaranMenungguCount',
+            'pembayaranMenungguTerbaru',
+            'petugasMenungguCount',
+            'petugasMenungguTerbaru',
+            'pesananTerbaru',
+            'totalPesanan',
+            'totalPaket',
+            'totalPetugasAktif',
+            'totalPelanggan'
+        ));
+    }
+
+    // Profil Admin
+    public function profil()
+    {
+        $redirect = $this->cekAdmin();
+        if ($redirect) {
+            return $redirect;
+        }
+
+        $user = Auth::user();
+
+        return view('admin.profil', compact('user'));
+    }
+
+    public function updateProfil(Request $request)
+    {
+        $redirect = $this->cekAdmin();
+        if ($redirect) {
+            return $redirect;
+        }
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'no_hp' => ['required', 'string', 'max:20'],
+            'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'hapus_foto' => ['nullable', 'in:0,1'],
+        ]);
+
+        if ($request->input('hapus_foto') === '1') {
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $user->foto = null;
+        }
+
+        if ($request->hasFile('foto')) {
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $user->foto = $request->file('foto')->store('foto-profil', 'public');
+        }
+
+        $user->nama = $validated['nama'];
+        $user->email = $validated['email'];
+        $user->no_hp = $validated['no_hp'];
+        $user->save();
+
+        return redirect()->route('admin.profil')->with('success', 'Profil disimpan.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $redirect = $this->cekAdmin();
+        if ($redirect) {
+            return $redirect;
+        }
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('admin.profil')->with('success', 'Kata sandi sudah diganti.');
+    }
+
+    // verif petugas F-02
     public function indexPetugas()
     {
         $redirect = $this->cekAdmin();
@@ -40,9 +165,14 @@ class AdminController extends Controller
             return $redirect;
         }
 
-        $petugas = User::where('role', 'petugas')->orderBy('created_at', 'desc')->get();
+        $petugas = User::where('role', 'petugas')
+            ->orderByRaw("CASE WHEN status_verifikasi = 'menunggu' THEN 0 ELSE 1 END")
+            ->latest()
+            ->get();
 
-        return view('admin.petugas.index', compact('petugas'));
+        $petugasMenungguCount = $petugas->where('status_verifikasi', 'menunggu')->count();
+
+        return view('admin.petugas.index', compact('petugas', 'petugasMenungguCount'));
     }
 
     public function updateVerifikasiPetugas(Request $request, $id)
@@ -63,10 +193,14 @@ class AdminController extends Controller
             'status_verifikasi' => $request->status_verifikasi,
         ]);
 
-        return redirect()->back()->with('success', 'Status verifikasi petugas berhasil diperbarui.');
+        $pesan = $request->status_verifikasi === 'terverifikasi'
+            ? "{$petugas->nama} sudah diverifikasi."
+            : 'Status verifikasi petugas berhasil diperbarui.';
+
+        return redirect()->back()->with('success', $pesan);
     }
 
-    //kelola harga dan deskripsi F-03
+    // kelola harga dan deskripsi F-03
     public function indexPaket()
     {
         $redirect = $this->cekAdmin();
@@ -97,10 +231,10 @@ class AdminController extends Controller
 
         $paketLayanan->update($request->all());
 
-        return redirect()->route('admin.paket.index')->with('success', 'Paket layanan berhasil diperbarui.');
+        return redirect()->route('admin.paket.index')->with('success', 'Paket disimpan.');
     }
 
-    //lihat daftar seluruh pesanan F-09
+    // lihat daftar seluruh pesanan F-09
     public function indexPesanan()
     {
         $redirect = $this->cekAdmin();
@@ -113,10 +247,19 @@ class AdminController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.pesanan', compact('pesanan'));
+        $countStatus = [
+            'semua' => $pesanan->count(),
+            'menunggu' => $pesanan->where('status', 'menunggu')->count(),
+            'diterima' => $pesanan->where('status', 'diterima')->count(),
+            'dikerjakan' => $pesanan->where('status', 'dikerjakan')->count(),
+            'selesai' => $pesanan->where('status', 'selesai')->count(),
+            'dibatalkan' => $pesanan->where('status', 'dibatalkan')->count(),
+        ];
+
+        return view('admin.pesanan', compact('pesanan', 'countStatus'));
     }
 
-    //konfirmasi pembyaaran F-07
+    // konfirmasi pembayaran F-07
     public function indexPembayaran()
     {
         $redirect = $this->cekAdmin();
@@ -125,9 +268,14 @@ class AdminController extends Controller
             return $redirect;
         }
 
-        $pembayaran = Pembayaran::with('pesanan.pelanggan')->latest()->get();
+        $pembayaran = Pembayaran::with('pesanan.pelanggan')
+            ->orderByRaw("CASE WHEN status = 'menunggu' THEN 0 ELSE 1 END")
+            ->latest()
+            ->get();
 
-        return view('admin.pembayaran', compact('pembayaran'));
+        $pembayaranMenungguCount = $pembayaran->where('status', 'menunggu')->count();
+
+        return view('admin.pembayaran', compact('pembayaran', 'pembayaranMenungguCount'));
     }
 
     public function updateStatusPembayaran(Request $request, $id)
@@ -147,6 +295,10 @@ class AdminController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->back()->with('success', 'Status pembayaran berhasil dikonfirmasi.');
+        $pesan = $request->status === 'lunas'
+            ? "Pembayaran pesanan #{$pembayaran->pesanan_id} ditandai lunas."
+            : 'Status pembayaran berhasil diperbarui.';
+
+        return redirect()->back()->with('success', $pesan);
     }
 }
