@@ -53,7 +53,7 @@ class User extends Authenticatable
         return match ($this->role) {
             'admin' => 'admin.beranda',
             'petugas' => 'petugas.dashboard',
-            'pelanggan' => 'pelanggan.pesanan.index',
+            'pelanggan' => 'pelanggan.beranda',
             default => null,
         };
     }

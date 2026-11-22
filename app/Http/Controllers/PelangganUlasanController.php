@@ -11,7 +11,6 @@ use Illuminate\View\View;
 
 class PelangganUlasanController extends Controller
 {
-
     private function cekPelanggan(): void
     {
         if (Auth::user()->role !== 'pelanggan') {
@@ -19,32 +18,40 @@ class PelangganUlasanController extends Controller
         }
     }
 
-
     public function index(): View
     {
         $this->cekPelanggan();
 
-        $ulasan = Ulasan::with(['pesanan.paketLayanan', 'pesanan.petugas'])
+        $belumDiulas = Pesanan::with(['paketLayanan', 'petugas'])
+            ->where('pelanggan_id', Auth::id())
+            ->where('status', 'selesai')
+            ->whereDoesntHave('ulasan')
+            ->latest('tanggal')
+            ->get();
+
+        $sudahDiulas = Ulasan::with(['pesanan.paketLayanan', 'pesanan.petugas'])
             ->whereHas('pesanan', function ($query) {
                 $query->where('pelanggan_id', Auth::id());
             })
             ->latest()
             ->get();
 
-        return view('pelanggan.ulasan.index', compact('ulasan'));
+        return view('pelanggan.ulasan.index', compact('belumDiulas', 'sudahDiulas'));
     }
-
 
     public function create(int $pesananId): View
     {
         $this->cekPelanggan();
 
-        $pesanan = Pesanan::where('pelanggan_id', Auth::id())
+        $pesanan = Pesanan::with(['paketLayanan', 'petugas'])
+            ->where('pelanggan_id', Auth::id())
             ->where('status', 'selesai')
             ->findOrFail($pesananId);
 
         if ($pesanan->ulasan) {
-            abort(409, 'Pesanan ini sudah memiliki ulasan.');
+            return redirect()
+                ->route('pelanggan.ulasan.index')
+                ->with('error', 'Pesanan ini sudah memiliki ulasan.');
         }
 
         return view('pelanggan.ulasan.create', compact('pesanan'));
@@ -58,7 +65,7 @@ class PelangganUlasanController extends Controller
 
         if ($pesanan->ulasan) {
             return redirect()
-                ->back()
+                ->route('pelanggan.ulasan.index')
                 ->with('error', 'Anda sudah memberikan ulasan untuk pesanan ini.');
         }
 
@@ -69,8 +76,8 @@ class PelangganUlasanController extends Controller
         ]);
 
         return redirect()
-            ->route('pelanggan.pesanan.show', $pesanan->id)
-            ->with('success', 'Ulasan berhasil dikirim. Terima kasih!');
+            ->route('pelanggan.ulasan.index')
+            ->with('success', 'Makasih, ulasan terkirim.');
     }
 
     public function destroy(int $id): RedirectResponse
@@ -85,6 +92,6 @@ class PelangganUlasanController extends Controller
 
         return redirect()
             ->route('pelanggan.ulasan.index')
-            ->with('success', 'Ulasan berhasil dihapus.');
+            ->with('success', 'Ulasan dihapus.');
     }
 }

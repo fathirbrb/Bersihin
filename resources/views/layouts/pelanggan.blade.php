@@ -2,125 +2,74 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Bersihin') — Bersihin</title>
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #f0f2f5;
-            color: #1a1a2e;
-            line-height: 1.6;
-        }
-        .navbar {
-            background: linear-gradient(135deg, #0f9b58, #0d8a4e);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,.15);
-        }
-        .navbar-brand { color: #fff; font-size: 1.4rem; font-weight: 700; text-decoration: none; }
-        .navbar-nav { display: flex; gap: 1.5rem; list-style: none; }
-        .navbar-nav a {
-            color: rgba(255,255,255,.85);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color .2s;
-        }
-        .navbar-nav a:hover, .navbar-nav a.active { color: #fff; }
-        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 1px 4px rgba(0,0,0,.08);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; }
-        .btn {
-            display: inline-block;
-            padding: .55rem 1.2rem;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            font-size: .875rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: opacity .2s;
-        }
-        .btn:hover { opacity: .85; }
-        .btn-primary { background: #0f9b58; color: #fff; }
-        .btn-danger  { background: #dc3545; color: #fff; }
-        .btn-secondary { background: #6c757d; color: #fff; }
-        .btn-warning { background: #f59e0b; color: #fff; }
-        .badge {
-            display: inline-block;
-            padding: .2rem .6rem;
-            border-radius: 20px;
-            font-size: .75rem;
-            font-weight: 600;
-            text-transform: capitalize;
-        }
-        .badge-menunggu   { background: #fef3c7; color: #92400e; }
-        .badge-diterima   { background: #dbeafe; color: #1e40af; }
-        .badge-dikerjakan { background: #e0e7ff; color: #3730a3; }
-        .badge-selesai    { background: #d1fae5; color: #065f46; }
-        .badge-dibatalkan { background: #fee2e2; color: #991b1b; }
-        .alert {
-            padding: .75rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-weight: 500;
-        }
-        .alert-success { background: #d1fae5; color: #065f46; }
-        .alert-error   { background: #fee2e2; color: #991b1b; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: .3rem; }
-        .form-control {
-            width: 100%;
-            padding: .55rem .75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: .95rem;
-            transition: border-color .2s;
-        }
-        .form-control:focus { outline: none; border-color: #0f9b58; box-shadow: 0 0 0 3px rgba(15,155,88,.15); }
-        select.form-control { appearance: none; }
-        textarea.form-control { resize: vertical; min-height: 80px; }
-        .text-danger { color: #dc3545; font-size: .8rem; margin-top: .2rem; }
-        .table-wrap { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: .65rem .75rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        th { font-weight: 600; font-size: .8rem; text-transform: uppercase; color: #6b7280; }
-        .star { color: #f59e0b; }
-        .empty-state { text-align: center; padding: 3rem 1rem; color: #6b7280; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>@yield('title', 'Pelanggan') · Bersihin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/bersihin.css') }}">
     @stack('styles')
 </head>
-<body>
-    <nav class="navbar">
-        <a href="{{ route('pelanggan.pesanan.index') }}" class="navbar-brand">🧹 Bersihin</a>
-        <ul class="navbar-nav">
-            <li><a href="{{ route('pelanggan.pesanan.index') }}" class="{{ request()->routeIs('pelanggan.pesanan.*') ? 'active' : '' }}">Pesanan</a></li>
-            <li><a href="{{ route('pelanggan.ulasan.index') }}" class="{{ request()->routeIs('pelanggan.ulasan.*') ? 'active' : '' }}">Ulasan Saya</a></li>
-        </ul>
-    </nav>
+<body class="app">
+    <header class="bar">
+        <div class="bar-isi">
+            <a href="{{ route('pelanggan.beranda') }}" class="logo">
+                <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><path d="M6 6.5a7 5 0 0 1 14 0" fill="none" stroke="#2453D8" stroke-width="2"/><path d="M3.5 9h19l-2.2 13.2a2 2 0 0 1-2 1.8H7.7a2 2 0 0 1-2-1.8z" fill="#EAF0FF" stroke="#2453D8" stroke-width="2" stroke-linejoin="round"/><path d="M5.2 15.5h15.6l-1.1 6.6a1 1 0 0 1-1 .9H7.3a1 1 0 0 1-1-.9z" fill="#2453D8"/></svg>
+                bersihin
+            </a>
+            <nav aria-label="Menu pelanggan">
+                <ul class="tab">
+                    <li>
+                        <a href="{{ route('pelanggan.beranda') }}" class="{{ request()->routeIs('pelanggan.beranda') ? 'aktif' : '' }}" {!! request()->routeIs('pelanggan.beranda') ? 'aria-current="page"' : '' !!}>
+                            <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg></span>
+                            Beranda
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pelanggan.pesanan.create') }}" class="{{ request()->routeIs('pelanggan.pesanan.create') ? 'aktif' : '' }}" {!! request()->routeIs('pelanggan.pesanan.create') ? 'aria-current="page"' : '' !!}>
+                            <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8a5 4 0 0 1 10 0"/><path d="M4 8h16l-1.8 11.2a1.5 1.5 0 0 1-1.5 1.3H7.3a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M12 11v6M9 14h6"/></svg></span>
+                            Pesan
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pelanggan.pesanan.index') }}" class="{{ request()->routeIs('pelanggan.pesanan.index', 'pelanggan.pesanan.show') ? 'aktif' : '' }}" {!! request()->routeIs('pelanggan.pesanan.index', 'pelanggan.pesanan.show') ? 'aria-current="page"' : '' !!}>
+                            <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="16" rx="2"/><path d="M9 3.5h6v3H9zM9 11h6M9 15h4"/></svg></span>
+                            Pesananku
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pelanggan.ulasan.index') }}" class="{{ request()->routeIs('pelanggan.ulasan.*') ? 'aktif' : '' }}" {!! request()->routeIs('pelanggan.ulasan.*') ? 'aria-current="page"' : '' !!}>
+                            <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/></svg></span>
+                            Ulasan
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <a href="{{ route('pelanggan.profil') }}" class="avatar" {!! request()->routeIs('pelanggan.profil') ? 'aria-current="page"' : '' !!} aria-label="Profil {{ Auth::user()->nama }}">
+                @if(Auth::user()->foto)
+                    <img src="{{ asset('storage/' . Auth::user()->foto) }}" alt="{{ Auth::user()->nama }}">
+                @else
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/></svg>
+                @endif
+            </a>
+        </div>
+    </header>
 
-    <div class="container">
-        {{-- Flash messages --}}
+    <main class="@yield('main-class', '')">
         @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="pesan pesan-ok" role="status">{{ session('success') }}</div>
         @endif
         @if(session('error'))
-            <div class="alert alert-error">{{ session('error') }}</div>
+            <div class="pesan pesan-salah" role="alert">{{ session('error') }}</div>
+        @endif
+        @if($errors->any())
+            <div class="pesan pesan-salah" role="alert">
+                {{ $errors->first() }}
+            </div>
         @endif
 
         @yield('content')
-    </div>
+    </main>
 
     @stack('scripts')
 </body>
