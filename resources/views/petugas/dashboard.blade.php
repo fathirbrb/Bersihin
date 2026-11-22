@@ -12,7 +12,7 @@
     @if($petugas->status_verifikasi == 'menunggu')
         <div class="pesan pesan-tunggu" role="status">
             <b>Akunmu lagi dicek admin.</b>
-            <span>Begitu beres, kamu bisa ambil pesanan.</span>
+            <span>Setelah diverifikasi, kamu bisa ambil pesanan.</span>
         </div>
     @elseif($petugas->status_verifikasi == 'ditolak')
         <div class="pesan pesan-salah" role="alert">
@@ -44,7 +44,7 @@
             @include('petugas.partials.logo', ['ukuran' => 48])
             <b>Embernya masih kosong</b>
             @if($petugas->status_verifikasi == 'terverifikasi')
-                <span>Kamu belum punya kerjaan. Ambil pesanan yang lagi nunggu petugas.</span>
+                <span>Belum ada kerjaan buat kamu.</span>
                 <a href="{{ route('petugas.pesanan-masuk') }}" class="btn btn-utama">Lihat pesanan masuk</a>
             @else
                 <span>Pesanan bisa diambil setelah akunmu diverifikasi admin.</span>

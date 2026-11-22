@@ -12,7 +12,7 @@
         <div class="kosong">
             @include('petugas.partials.logo', ['ukuran' => 48])
             <b>Belum ada yang pesan</b>
-            <span>Pesanan baru muncul di sini begitu pelanggan memesan.</span>
+            <span>Pesanan baru muncul di sini.</span>
         </div>
     @else
         @foreach($pesanan as $item)

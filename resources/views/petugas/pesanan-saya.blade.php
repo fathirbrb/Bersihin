@@ -1,6 +1,6 @@
 @extends('layouts.petugas')
 
-@section('title', 'Pesanan saya')
+@section('title', 'Kerjaanku')
 
 @section('content')
     @php
@@ -9,15 +9,15 @@
     @endphp
 
     <div class="kepala">
-        <h1>Pesanan saya</h1>
+        <h1>Kerjaanku</h1>
         <p>{{ $berjalan->count() }} sedang jalan · {{ $riwayat->count() }} di riwayat</p>
     </div>
 
     @if($pesanan->isEmpty())
         <div class="kosong">
             @include('petugas.partials.logo', ['ukuran' => 48])
-            <b>Kamu belum ambil pesanan</b>
-            <span>Pesanan yang kamu ambil akan muncul di sini.</span>
+            <b>Belum ada kerjaan</b>
+            <span>Pesanan yang kamu ambil muncul di sini.</span>
             <a href="{{ route('petugas.pesanan-masuk') }}" class="btn btn-utama">Lihat pesanan masuk</a>
         </div>
     @else
@@ -31,7 +31,8 @@
                     <a href="{{ route('petugas.pesanan.show', $item->id) }}" class="baris">
                         <span>
                             <span class="judul-baris">{{ $item->paketLayanan->nama_paket ?? '-' }}</span>
-                            <span class="sub-baris angka">{{ $item->tanggal->translatedFormat('D, d M') }} · {{ str_replace(':', '.', substr($item->jam_mulai, 0, 5)) }} · {{ Str::limit($item->alamat, 32) }}</span>
+                            <span class="sub-baris angka">{{ $item->tanggal->translatedFormat('D, d M') }} · {{ str_replace(':', '.', substr($item->jam_mulai, 0, 5)) }}</span>
+                            <span class="sub-baris">{{ $item->alamat }}</span>
                         </span>
                         @include('petugas.partials.status', ['status' => $item->status])
                     </a>

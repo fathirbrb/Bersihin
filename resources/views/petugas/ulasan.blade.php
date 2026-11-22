@@ -14,7 +14,7 @@
         <div class="kosong">
             @include('petugas.partials.logo', ['ukuran' => 48])
             <b>Belum ada ulasan</b>
-            <span>Ulasan muncul setelah pelanggan menilai pesanan yang sudah beres.</span>
+            <span>Muncul setelah pelanggan kasih bintang.</span>
         </div>
     @else
         <div class="daftar">
