@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Bersihin · Jasa bersih-bersih rumah</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/bersihin.css">
+    <style>
+        .bar-isi { max-width: 1120px; }
+        .nav-landing { display: flex; align-items: center; gap: 4px; margin-left: auto; list-style: none; }
+        .nav-landing a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; color: var(--tinta-2); text-decoration: none; font-size: 15px; }
+        .nav-landing a:not(.btn):hover { background: var(--lantai); color: var(--tinta); }
+        .nav-landing .btn { margin-left: 8px; }
+
+        .isi { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+        /* Pembuka */
+        .pembuka { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 56px; align-items: center; padding: 72px 0 88px; }
+        .pembuka h1 { font-size: 54px; line-height: 1.05; letter-spacing: -.035em; max-width: 13ch; }
+        .pembuka h1 em { font-style: normal; color: var(--ember); }
+        .pembuka .lead { font-size: 19px; color: var(--tinta-2); max-width: 46ch; margin: 20px 0 32px; }
+        .contoh { position: relative; }
+        .contoh .kartu-fokus { padding: 24px 24px 40px; }
+        .contoh .kecil { margin: -18px 24px 0; position: relative; background: var(--keramik); border: 1px solid var(--garis); border-radius: var(--r-kontrol); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 15px; box-shadow: 0 12px 32px rgba(16, 24, 58, .08); }
+
+        /* Paket */
+        .paket-bagian { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 56px; padding: 72px 0; border-top: 1px solid var(--garis); }
+        .paket-bagian h2, .alur h2 { font-size: 33px; line-height: 1.15; letter-spacing: -.02em; }
+        .paket-bagian .lead { color: var(--tinta-2); margin-top: 12px; max-width: 36ch; }
+        .paket-baris { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 24px; padding: 20px 0; }
+        .paket-baris + .paket-baris { border-top: 1px solid var(--garis); }
+        .paket-baris h3 { font-size: 19px; letter-spacing: -.01em; }
+        .paket-baris p { color: var(--tinta-2); font-size: 15px; }
+        .paket-baris .harga { font-size: 19px; text-align: right; }
+        .paket-baris .durasi { text-align: right; font-size: 14px; color: var(--tinta-2); }
+
+        /* Alur pesanan, pakai motif ember */
+        .alur { background: var(--lantai); border-radius: 28px; padding: 56px 48px; }
+        .alur .lead { color: var(--tinta-2); margin-top: 8px; max-width: 52ch; }
+        .tahap { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 16px; margin-top: 40px; list-style: none; }
+        .tahap li .tabung { height: 12px; border-radius: 6px; background: var(--keramik); overflow: hidden; margin-bottom: 16px; }
+        .tahap li .tabung span { display: block; height: 100%; background: var(--ember); border-radius: 6px; }
+        .tahap b { display: block; font-weight: 600; }
+        .tahap p { color: var(--tinta-2); font-size: 15px; margin-top: 4px; }
+        .bayar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 40px; }
+        .bayar div { background: var(--keramik); border-radius: var(--r-kontrol); padding: 16px 20px; }
+        .bayar b { display: block; }
+        .bayar span { font-size: 15px; color: var(--tinta-2); }
+
+        /* Ajakan petugas */
+        .petugas { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; padding: 72px 0; }
+        .petugas h2 { font-size: 27px; letter-spacing: -.02em; }
+        .petugas p { color: var(--tinta-2); max-width: 52ch; margin-top: 4px; }
+
+        footer { border-top: 1px solid var(--garis); }
+        footer .isi a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
+        footer .isi { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 24px; padding-bottom: 32px; font-size: 14px; color: var(--tinta-2); }
+
+        @media (max-width: 859px) {
+            .nav-landing .geser { display: none; }
+            .pembuka { grid-template-columns: 1fr; gap: 40px; padding: 40px 0 56px; }
+            .pembuka h1 { font-size: 40px; }
+            .pembuka .lead { font-size: 17px; margin: 16px 0 24px; }
+            .paket-bagian { grid-template-columns: 1fr; gap: 16px; padding: 48px 0; }
+            .paket-bagian h2, .alur h2 { font-size: 27px; }
+            .alur { padding: 32px 20px; border-radius: var(--r-kartu); }
+            .tahap { grid-template-columns: 1fr 1fr; gap: 24px 16px; }
+            .bayar { grid-template-columns: 1fr; }
+            .petugas { padding: 48px 0; }
+        }
+        @media (max-width: 480px) {
+            .isi { padding: 0 16px; }
+            .nav-landing .btn { margin-left: 0; padding: 0 14px; }
+            .pembuka h1 { font-size: 34px; }
+            .pembuka .aksi .btn { flex: 1 1 auto; }
+            .tahap { grid-template-columns: 1fr; }
+            .contoh .kecil { margin: -14px 12px 0; }
+        }
+    </style>
+</head>
+<body>
+    <header class="bar">
+        <div class="bar-isi">
+            <a href="landing.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><path d="M6 6.5a7 5 0 0 1 14 0" fill="none" stroke="#2453D8" stroke-width="2"/><path d="M3.5 9h19l-2.2 13.2a2 2 0 0 1-2 1.8H7.7a2 2 0 0 1-2-1.8z" fill="#EAF0FF" stroke="#2453D8" stroke-width="2" stroke-linejoin="round"/><path d="M5.2 15.5h15.6l-1.1 6.6a1 1 0 0 1-1 .9H7.3a1 1 0 0 1-1-.9z" fill="#2453D8"/></svg>
+                bersihin
+            </a>
+            <ul class="nav-landing">
+                <li class="geser"><a href="#paket">Paket</a></li>
+                <li class="geser"><a href="#alur">Alurnya</a></li>
+                <li><a href="masuk.html">Masuk</a></li>
+                <li><a href="daftar.html" class="btn btn-utama btn-kecil">Daftar</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="isi" style="max-width:1120px;padding-top:0;padding-bottom:0;">
+        <section class="pembuka">
+            <div>
+                <h1>Rumahmu dibersihin, kamu tinggal <em>santai</em>.</h1>
+                <p class="lead">Pilih paket, atur jadwal, petugas datang. Harga pasti, tanpa tawar-menawar.</p>
+                <div class="aksi">
+                    <a href="daftar.html" class="btn btn-utama">Pesan petugas</a>
+                    <a href="#paket" class="btn btn-kedua">Lihat paket</a>
+                </div>
+            </div>
+
+            <!-- Contoh tampilan pesanan di aplikasi -->
+            <div class="contoh" aria-label="Contoh pesanan di aplikasi Bersihin">
+                <div class="kartu kartu-fokus">
+                    <div class="atas">
+                        <p class="paket">Pembersihan Rutin · 3 jam</p>
+                        <span class="status s-jalan"><span class="m" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i></span>Diterima</span>
+                    </div>
+                    <p class="jam">13.00</p>
+                    <p class="tgl">Rabu, 28 Oktober</p>
+                    <dl class="info">
+                        <dt>Alamat</dt><dd>Jl. Contoh No. 5, Rajabasa, Bandar Lampung</dd>
+                        <dt>Petugas</dt><dd>Rifanjir</dd>
+                    </dl>
+                    <div class="level">
+                        <div class="tabung" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2" aria-label="Progres pesanan"><span style="width:50%"></span></div>
+                        <div class="label"><b>Diterima, belum mulai</b><span>Langkah 2 dari 4</span></div>
+                    </div>
+                </div>
+                <div class="kecil">
+                    <span>Bayar tunai ke petugas</span>
+                    <span class="angka" style="font-weight:600;">Rp150.000</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="paket-bagian" id="paket">
+            <div>
+                <h2>Empat paket, harganya tetap</h2>
+                <p class="lead">Harga sudah final. Durasi tergantung kondisi rumah.</p>
+            </div>
+            <div>
+                <div class="paket-baris">
+                    <div><h3>Pembersihan Rutin</h3><p>Menyapu, mengepel, merapikan ruangan</p></div>
+                    <div><p class="harga">Rp150.000</p><p class="durasi">± 3 jam</p></div>
+                </div>
+                <div class="paket-baris">
+                    <div><h3>Deep Cleaning</h3><p>Kamar mandi, dapur, dan lantai secara menyeluruh</p></div>
+                    <div><p class="harga">Rp350.000</p><p class="durasi">± 6 jam</p></div>
+                </div>
+                <div class="paket-baris">
+                    <div><h3>Cuci Sofa dan Kasur</h3><p>Pembersihan sofa dan kasur</p></div>
+                    <div><p class="harga">Rp250.000</p><p class="durasi">± 4 jam</p></div>
+                </div>
+                <div class="paket-baris">
+                    <div><h3>Pembersihan Pascarenovasi</h3><p>Membersihkan sisa debu dan material setelah renovasi</p></div>
+                    <div><p class="harga">Rp500.000</p><p class="durasi">± 8 jam</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="alur" id="alur">
+            <h2>Dari pesan sampai beres</h2>
+            <p class="lead">Pantau tiap langkahnya dari HP.</p>
+            <ol class="tahap">
+                <li><div class="tabung"><span style="width:25%"></span></div><b>Menunggu petugas</b><p>Pesananmu masuk ke daftar petugas.</p></li>
+                <li><div class="tabung"><span style="width:50%"></span></div><b>Diterima</b><p>Petugas ambil pesananmu.</p></li>
+                <li><div class="tabung"><span style="width:75%"></span></div><b>Dikerjakan</b><p>Petugas mulai bersih-bersih.</p></li>
+                <li><div class="tabung"><span style="width:100%"></span></div><b>Beres</b><p>Rumah bersih, tinggal kasih ulasan.</p></li>
+            </ol>
+            <div class="bayar">
+                <div><b>Transfer</b><span>Upload bukti, dicek admin.</span></div>
+                <div><b>Tunai</b><span>Bayar langsung ke petugas.</span></div>
+            </div>
+        </section>
+
+        <section class="petugas">
+            <div>
+                <h2>Mau jadi petugas?</h2>
+                <p>Daftar, tunggu diverifikasi admin, lalu ambil pesanan.</p>
+            </div>
+            <a href="daftar.html#petugas" class="btn btn-kedua">Daftar jadi petugas</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="isi">
+            <span>Bersihin, proyek Kelompok 4</span>
+            <span><a href="masuk.html">Masuk</a> · <a href="daftar.html">Daftar</a></span>
+        </div>
+    </footer>
+</body>
+</html>
