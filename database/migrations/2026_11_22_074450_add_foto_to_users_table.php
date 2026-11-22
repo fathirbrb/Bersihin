@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('foto')->nullable()->after('status_verifikasi');
-        });
+        if (!Schema::hasColumn('users', 'foto')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('foto')->nullable()->after('status_verifikasi');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('foto');
-        });
+        if (Schema::hasColumn('users', 'foto')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('foto');
+            });
+        }
     }
 };
