@@ -24,11 +24,11 @@ class EnsureRole
 
         if (!in_array($user->role, $roles, true)) {
             return match ($user->role) {
-                'admin'     => redirect()->route('admin.paket.index')
+                'admin'     => redirect()->route('admin.beranda')
                                 ->with('error', 'Kamu tidak punya akses ke halaman itu.'),
                 'petugas'   => redirect()->route('petugas.dashboard')
                                 ->with('error', 'Kamu tidak punya akses ke halaman itu.'),
-                'pelanggan' => redirect()->route('pelanggan.pesanan.index')
+                'pelanggan' => redirect()->route('pelanggan.beranda')
                                 ->with('error', 'Kamu tidak punya akses ke halaman itu.'),
                 default     => abort(403, 'Akses ditolak.'),
             };
