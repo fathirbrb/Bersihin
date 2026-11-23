@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Middleware\EnsureUserHasRole;
+use App\Http\Middleware\EnsureRole;
 use App\Models\PaketLayanan;
 use App\Models\Pembayaran;
 use App\Models\Pesanan;
@@ -62,7 +62,7 @@ class AdminAccessTest extends TestCase
 
         $response = $this->actingAs($pelanggan)->get('/admin/paket');
 
-        $response->assertRedirect(route('pelanggan.pesanan.index'));
+        $response->assertRedirect(route('pelanggan.beranda'));
         $response->assertSessionHas('error');
     }
 
@@ -104,7 +104,7 @@ class AdminAccessTest extends TestCase
             'estimasi_durasi_jam' => 2,
         ]);
 
-        $response->assertRedirect(route('pelanggan.pesanan.index'));
+        $response->assertRedirect(route('pelanggan.beranda'));
         $this->assertEquals('100000.00', $paket->fresh()->harga);
     }
 
@@ -116,7 +116,7 @@ class AdminAccessTest extends TestCase
         $response = $this->actingAs($pelanggan)
             ->put("/admin/pembayaran/{$pembayaran->id}/status", ['status' => 'lunas']);
 
-        $response->assertRedirect(route('pelanggan.pesanan.index'));
+        $response->assertRedirect(route('pelanggan.beranda'));
         $this->assertEquals('menunggu', $pembayaran->fresh()->status);
     }
 
@@ -158,7 +158,7 @@ class AdminAccessTest extends TestCase
         $paket = $this->buatPaket();
 
         $response = $this->actingAs($pelanggan)
-            ->withoutMiddleware(EnsureUserHasRole::class)
+            ->withoutMiddleware(EnsureRole::class)
             ->put("/admin/paket/{$paket->id}", [
                 'nama_paket' => 'Paket Regular',
                 'deskripsi' => 'Deskripsi diubah',
@@ -166,7 +166,7 @@ class AdminAccessTest extends TestCase
                 'estimasi_durasi_jam' => 2,
             ]);
 
-        $response->assertRedirect(route('pelanggan.pesanan.index'));
+        $response->assertRedirect(route('pelanggan.beranda'));
         $this->assertEquals('100000.00', $paket->fresh()->harga);
     }
 }

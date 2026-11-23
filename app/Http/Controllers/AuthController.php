@@ -106,9 +106,9 @@ class AuthController extends Controller
     private function redirectBerdasarkanRole(User $user): RedirectResponse
     {
         return match ($user->role) {
-            'admin'     => redirect()->intended(route('admin.paket.index')),
+            'admin'     => redirect()->intended(route('admin.beranda')),
             'petugas'   => redirect()->intended(route('petugas.dashboard')),
-            'pelanggan' => redirect()->intended(route('pelanggan.pesanan.index')),
+            'pelanggan' => redirect()->intended(route('pelanggan.beranda')),
             default     => redirect()->route('login'),
         };
     }

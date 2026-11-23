@@ -83,6 +83,7 @@ Route::middleware(['auth', 'role:pelanggan'])
     ->group(function () {
         // Beranda
         Route::get('/',                              [PelangganPesananController::class, 'beranda'])->name('beranda');
+        Route::get('/beranda',                       [PelangganPesananController::class, 'beranda']);
 
         // Pesanan
         Route::get('/pesanan',                              [PelangganPesananController::class, 'index'])->name('pesanan.index');
@@ -117,6 +118,7 @@ Route::middleware(['auth', 'role:admin'])
     ->group(function () {
         // Beranda & Profil
         Route::get('/',                                     [AdminController::class, 'beranda'])->name('beranda');
+        Route::get('/beranda',                              [AdminController::class, 'beranda']);
         Route::get('/profil',                               [AdminController::class, 'profil'])->name('profil');
         Route::put('/profil',                               [AdminController::class, 'updateProfil'])->name('profil.update');
         Route::put('/profil/password',                      [AdminController::class, 'updatePassword'])->name('profil.password');
