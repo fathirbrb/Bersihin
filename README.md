@@ -152,9 +152,9 @@ Setelah menjalankan `php artisan migrate --seed`, akun demo siap pakai:
 
 | Role | Email | Kata Sandi | Keterangan |
 |------|-------|------------|------------|
-| **Admin** | `admin@bersihin.test` | `password` | Akses penuh dashboard admin |
-| **Petugas** | `petugas@bersihin.test` | `password` | Status telah diverifikasi |
-| **Pelanggan** | `pelanggan@bersihin.test` | `password` | Akun pelanggan aktif |
+| **Admin** | `admin@bersihin.id` | `password` | Akses penuh dashboard admin |
+| **Petugas** | `petugas@bersihin.id` | `password` | Status telah diverifikasi |
+| **Pelanggan** | `pelanggan@bersihin.id` | `password` | Akun pelanggan aktif |
 
 ---
 

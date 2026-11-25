@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Pesanan · Admin Bersihin')
+@section('title', 'Pesanan')
 
 @section('content')
     <div class="kepala">
