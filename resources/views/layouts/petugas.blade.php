@@ -177,13 +177,7 @@
                     @endforeach
                 </ul>
             </nav>
-            {{-- Ikon profil, jadi link setelah route profil ada --}}
-            @php $ikonProfil = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/></svg>'; @endphp
-            @if(Route::has('petugas.profil'))
-                <a href="{{ route('petugas.profil') }}" class="avatar" aria-label="Profil {{ Auth::user()->nama }}" @if(request()->routeIs('petugas.profil')) aria-current="page" @endif>{!! $ikonProfil !!}</a>
-            @else
-                <span class="avatar" role="img" aria-label="{{ Auth::user()->nama }}">{!! $ikonProfil !!}</span>
-            @endif
+            <a href="{{ route('petugas.profil') }}" class="avatar" aria-label="Profil {{ Auth::user()->nama }}" @if(request()->routeIs('petugas.profil')) aria-current="page" @endif><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/></svg></a>
         </div>
     </header>
 

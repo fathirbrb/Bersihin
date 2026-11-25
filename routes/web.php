@@ -70,6 +70,9 @@ Route::middleware(['auth', 'role:petugas'])
         Route::post('/pesanan/{id}/kerjakan',[PetugasController::class, 'kerjakan'])->name('pesanan.kerjakan');
         Route::post('/pesanan/{id}/selesai', [PetugasController::class, 'selesai'])->name('pesanan.selesai');
         Route::get('/ulasan',                [PetugasController::class, 'ulasan'])->name('ulasan');
+        Route::get('/profil',                [PetugasController::class, 'profil'])->name('profil');
+        Route::put('/profil',                [PetugasController::class, 'updateProfil'])->name('profil.update');
+        Route::put('/profil/password',       [PetugasController::class, 'updatePassword'])->name('profil.password');
     });
 
 /*

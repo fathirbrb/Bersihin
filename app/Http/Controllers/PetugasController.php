@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Pesanan;
 use App\Models\Ulasan;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class PetugasController extends Controller
 {
@@ -176,6 +179,94 @@ class PetugasController extends Controller
             ->get();
 
         return view('petugas.ulasan', compact('ulasan'));
+    }
+
+    // Halaman profil petugas
+    public function profil()
+    {
+        $this->cekPetugas();
+
+        $user = Auth::user();
+
+        return view('petugas.profil', compact('user'));
+    }
+
+    // Simpan perubahan data diri dan foto
+    public function updateProfil(Request $request)
+    {
+        $this->cekPetugas();
+
+        $user = Auth::user();
+
+        $request->validate([
+            'nama'       => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'no_hp'      => ['required', 'string', 'max:20'],
+            'foto'       => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'hapus_foto' => ['nullable', 'boolean'],
+        ], [
+            'nama.required'  => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email'    => 'Format email tidak valid.',
+            'email.unique'   => 'Email sudah terdaftar.',
+            'no_hp.required' => 'Nomor HP wajib diisi.',
+            'foto.image'     => 'Berkas harus berupa gambar.',
+            'foto.mimes'     => 'Foto harus berformat JPG atau PNG.',
+            'foto.max'       => 'Ukuran foto maksimal 2 MB.',
+        ]);
+
+        $data = [
+            'nama'  => $request->nama,
+            'email' => $request->email,
+            'no_hp' => $request->no_hp,
+        ];
+
+        if ($request->boolean('hapus_foto')) {
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $data['foto'] = null;
+        }
+
+        if ($request->hasFile('foto')) {
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $data['foto'] = $request->file('foto')->store('foto_profil', 'public');
+        }
+
+        $user->update($data);
+
+        return redirect()
+            ->route('petugas.profil')
+            ->with('success', 'Profil disimpan.');
+    }
+
+    // Ganti kata sandi petugas
+    public function updatePassword(Request $request)
+    {
+        $this->cekPetugas();
+
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password'         => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'current_password.required'         => 'Kata sandi sekarang wajib diisi.',
+            'current_password.current_password' => 'Kata sandi sekarang tidak cocok.',
+            'password.required'                 => 'Kata sandi baru wajib diisi.',
+            'password.min'                      => 'Kata sandi baru minimal 8 karakter.',
+            'password.confirmed'                => 'Konfirmasi kata sandi baru tidak cocok.',
+        ]);
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()
+            ->route('petugas.profil')
+            ->with('success', 'Kata sandi sudah diganti.');
     }
 
     // Tolak akses selain role petugas
