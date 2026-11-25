@@ -23,9 +23,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 .aider*
-/skills
-/skills/
-/.agents
-/.agents/
 /public/mockup
 /public/mockup/
