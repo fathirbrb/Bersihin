@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +22,20 @@ class StorePesananRequest extends FormRequest
             'jam_mulai'        => ['required', 'date_format:H:i'],
             'catatan'          => ['nullable', 'string', 'max:2000'],
         ];
+    }
+
+    // Tanggal dan jam harus di masa depan
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($v) {
+            if ($v->errors()->isNotEmpty()) {
+                return;
+            }
+
+            if (Carbon::parse($this->tanggal . ' ' . $this->jam_mulai)->isPast()) {
+                $v->errors()->add('jam_mulai', 'Jam mulai sudah lewat.');
+            }
+        });
     }
 
     public function messages(): array

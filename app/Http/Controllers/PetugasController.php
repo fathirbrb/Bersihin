@@ -123,10 +123,15 @@ class PetugasController extends Controller
             return redirect()->back()->with('error', 'Jamnya bentrok dengan pesanan kamu yang lain di hari itu.');
         }
 
-        $pesanan->update([
-            'petugas_id' => Auth::id(),
-            'status' => 'diterima',
-        ]);
+        // Update atomik, hanya satu petugas yang menang
+        $diambil = Pesanan::where('id', $pesanan->id)
+            ->where('status', 'menunggu')
+            ->whereNull('petugas_id')
+            ->update(['petugas_id' => Auth::id(), 'status' => 'diterima']);
+
+        if ($diambil === 0) {
+            return redirect()->back()->with('error', 'Pesanan ini sudah diambil petugas lain.');
+        }
 
         $jadwal = $pesanan->tanggal->translatedFormat('l, d F') . ' jam ' . str_replace(':', '.', substr($pesanan->jam_mulai, 0, 5));
 
