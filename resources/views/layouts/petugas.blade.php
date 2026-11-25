@@ -40,13 +40,19 @@
 
         .bar { border-bottom: 1px solid var(--garis); }
         .bar-isi { max-width: 960px; margin: 0 auto; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; }
-        .logo { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 19px; color: var(--ember); text-decoration: none; letter-spacing: -.01em; }
+        .logo { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; font-size: 19px; color: var(--ember); text-decoration: none; letter-spacing: -.01em; }
         .mode { font-size: 12px; font-weight: 500; background: var(--ember-muda); color: var(--ember-tua); padding: 4px 10px; border-radius: 999px; }
-        .menu { display: flex; flex-wrap: wrap; gap: 2px; list-style: none; margin-left: auto; }
-        .menu a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; color: var(--tinta-2); text-decoration: none; font-size: 15px; }
-        .menu a:hover { background: var(--lantai); color: var(--tinta); }
-        .menu a.aktif { background: var(--ember-muda); color: var(--ember-tua); font-weight: 500; }
-        .nama { font-size: 14px; color: var(--tinta-2); }
+        .bar-isi > nav { margin-left: auto; }
+        .tab { display: flex; gap: 2px; list-style: none; }
+        .tab a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: 12px; color: var(--tinta-2); text-decoration: none; font-size: 15px; }
+        .tab a:hover { background: var(--lantai); color: var(--tinta); }
+        .tab a.aktif { background: var(--ember-muda); color: var(--ember-tua); font-weight: 500; }
+        .tab svg { width: 20px; height: 20px; flex: none; }
+        .tab .ikon { display: inline-grid; place-items: center; }
+        .avatar { display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--ember-muda); color: var(--ember-tua); overflow: hidden; }
+        .avatar svg { width: 24px; height: 24px; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        a.avatar:hover { box-shadow: 0 0 0 2px var(--keramik), 0 0 0 4px var(--ember); }
 
         main { max-width: 960px; margin: 0 auto; padding: 28px 20px 72px; }
         .kepala { margin-bottom: 20px; }
@@ -116,10 +122,21 @@
         .ringkas b { color: var(--tinta); font-weight: 600; font-variant-numeric: tabular-nums; }
         .bintang { color: var(--ember); letter-spacing: 1px; }
 
+        /* Di HP tab pindah ke bawah */
+        @media (max-width: 859px) {
+            .bar-isi { padding: 10px 16px; flex-wrap: nowrap; }
+            .bar-isi > nav { margin-left: 0; }
+            .bar-isi > .avatar { margin-left: auto; }
+            .tab { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); background: var(--keramik); border-top: 1px solid var(--garis); }
+            .tab a { flex-direction: column; justify-content: center; gap: 2px; min-height: 56px; padding: 0 4px; font-size: 12px; line-height: 1.2; text-align: center; }
+            .tab a:hover, .tab a.aktif { background: transparent; }
+            .tab .ikon { width: 56px; height: 30px; border-radius: 10px; transition: background-color 140ms var(--keluar); }
+            .tab a.aktif .ikon { background: var(--ember-muda); }
+            .tab svg { width: 22px; height: 22px; }
+            main { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+        }
         @media (max-width: 640px) {
             .bar-isi { padding: 10px 16px; }
-            .menu { margin-left: 0; width: 100%; }
-            .nama { display: none; }
             main { padding: 20px 16px 56px; }
             .kepala h1 { font-size: 27px; }
             .jam { font-size: 30px; }
@@ -141,13 +158,26 @@
                 bersihin
             </a>
             <span class="mode">Petugas</span>
-            <ul class="menu">
-                <li><a href="{{ route('petugas.dashboard') }}" class="{{ request()->routeIs('petugas.dashboard') ? 'aktif' : '' }}">Beranda</a></li>
-                <li><a href="{{ route('petugas.pesanan-masuk') }}" class="{{ request()->routeIs('petugas.pesanan-masuk') ? 'aktif' : '' }}">Pesanan masuk</a></li>
-                <li><a href="{{ route('petugas.pesanan-saya') }}" class="{{ request()->routeIs('petugas.pesanan-saya', 'petugas.pesanan.show') ? 'aktif' : '' }}">Pesanan saya</a></li>
-                <li><a href="{{ route('petugas.ulasan') }}" class="{{ request()->routeIs('petugas.ulasan') ? 'aktif' : '' }}">Ulasan</a></li>
-            </ul>
-            <span class="nama">{{ Auth::user()->nama }}</span>
+            @php
+                $tab = [
+                    ['petugas.dashboard', ['petugas.dashboard'], 'Beranda', '<path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/>'],
+                    ['petugas.pesanan-masuk', ['petugas.pesanan-masuk'], 'Pesanan', '<path d="M3 13h5l1.5 3h5l1.5-3h5"/><path d="M5.5 5h13L21 13v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5z"/>'],
+                    ['petugas.pesanan-saya', ['petugas.pesanan-saya', 'petugas.pesanan.show'], 'Kerjaanku', '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>'],
+                    ['petugas.ulasan', ['petugas.ulasan'], 'Ulasan', '<path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/>'],
+                ];
+            @endphp
+            <nav aria-label="Menu petugas">
+                <ul class="tab">
+                    @foreach($tab as [$route, $aktif, $label, $ikon])
+                        <li>
+                            <a href="{{ route($route) }}" @if(request()->routeIs(...$aktif)) class="aktif" aria-current="page" @endif>
+                                <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{!! $ikon !!}</svg></span>{{ $label }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </nav>
+            <a href="{{ route('petugas.profil') }}" class="avatar" aria-label="Profil {{ Auth::user()->nama }}" @if(request()->routeIs('petugas.profil')) aria-current="page" @endif><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/></svg></a>
         </div>
     </header>
 

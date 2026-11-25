@@ -3,287 +3,190 @@
 @section('title', 'Detail Pesanan')
 
 @section('content')
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
-        <h1 class="page-title" style="margin-bottom:0;">Detail Pesanan #{{ $pesanan->id }}</h1>
-        <a href="{{ route('pelanggan.pesanan.index') }}" class="btn btn-secondary">← Kembali</a>
-    </div>
+<a href="{{ route('pelanggan.pesanan.index') }}" class="kembali">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+    Pesananku
+</a>
 
-    <div class="card">
-        <table style="border-collapse:collapse; width:100%;">
-            <tr>
-                <td style="padding:.5rem .75rem; font-weight:600; width:200px;">Paket Layanan</td>
-                <td style="padding:.5rem .75rem;">{{ $pesanan->paketLayanan->nama_paket ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td style="padding:.5rem .75rem; font-weight:600;">Alamat</td>
-                <td style="padding:.5rem .75rem;">{{ $pesanan->alamat }}</td>
-            </tr>
-            <tr>
-                <td style="padding:.5rem .75rem; font-weight:600;">Tanggal & Jam</td>
-                <td style="padding:.5rem .75rem;">{{ $pesanan->tanggal->format('d M Y') }} — {{ $pesanan->jam_mulai }}</td>
-            </tr>
-            <tr>
-                <td style="padding:.5rem .75rem; font-weight:600;">Catatan</td>
-                <td style="padding:.5rem .75rem;">{{ $pesanan->catatan ?: '—' }}</td>
-            </tr>
-            <tr>
-                <td style="padding:.5rem .75rem; font-weight:600;">Total Harga</td>
-                <td style="padding:.5rem .75rem; font-weight:700;">Rp{{ number_format($pesanan->total_harga, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <td style="padding:.5rem .75rem; font-weight:600;">Status</td>
-                <td style="padding:.5rem .75rem;"><span class="badge badge-{{ $pesanan->status }}">{{ $pesanan->status }}</span></td>
-            </tr>
-            <tr>
-                <td style="padding:.5rem .75rem; font-weight:600;">Petugas</td>
-                <td style="padding:.5rem .75rem;">{{ $pesanan->petugas->nama ?? 'Belum ada petugas' }}</td>
-            </tr>
-        </table>
-    </div>
+@php
+    $mulaiCarbon = \Carbon\Carbon::parse($pesanan->tanggal->format('Y-m-d') . ' ' . $pesanan->jam_mulai);
+    $durasi = $pesanan->paketLayanan->estimasi_durasi_jam ?? 2;
+    $selesaiCarbon = $mulaiCarbon->copy()->addHours($durasi);
 
-    {{-- Tombol Batalkan --}}
-    @if($pesanan->status === 'menunggu')
-        <div class="card">
-            <form action="{{ route('pelanggan.pesanan.batalkan', $pesanan->id) }}" method="POST"
-                  onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')">
-                @csrf
-                <button type="submit" class="btn btn-danger">Batalkan Pesanan</button>
-            </form>
-        </div>
-    @endif
+    $step = match($pesanan->status) {
+        'menunggu' => 1,
+        'diterima' => 2,
+        'dikerjakan' => 3,
+        'selesai' => 4,
+        default => 1,
+    };
+    $stepText = match($pesanan->status) {
+        'menunggu' => 'Menunggu petugas',
+        'diterima' => 'Diterima, belum mulai',
+        'dikerjakan' => 'Sedang dikerjakan',
+        'selesai' => 'Selesai',
+        'dibatalkan' => 'Dibatalkan',
+        default => ucfirst($pesanan->status),
+    };
+    $percent = $step * 25;
+@endphp
 
-    {{-- Ulasan --}}
-    @if($pesanan->status === 'selesai')
-        <div class="card">
-            <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:.75rem;">Ulasan</h2>
+<div class="kepala">
+    <h1>{{ $pesanan->paketLayanan->nama_paket ?? 'Pesanan' }}</h1>
+    <p class="angka">{{ $pesanan->tanggal->translatedFormat('l, d F') }} · {{ substr($pesanan->jam_mulai, 0, 5) }} sampai {{ $selesaiCarbon->format('H.i') }}</p>
+</div>
 
-            @if($pesanan->ulasan)
-                <p>
-                    <span class="star">
-                        @for($i = 1; $i <= 5; $i++)
-                            {{ $i <= $pesanan->ulasan->rating ? '★' : '☆' }}
-                        @endfor
-                    </span>
-                    ({{ $pesanan->ulasan->rating }}/5)
-                </p>
-                <p style="margin-top:.4rem;">{{ $pesanan->ulasan->komentar ?: '—' }}</p>
+<div class="dua-kolom">
+    <section>
+        <h2 class="bagian">Pesanan</h2>
+        <div class="kartu {{ $pesanan->status !== 'dibatalkan' ? 'kartu-fokus' : '' }}">
+            @if($pesanan->status === 'dibatalkan')
+                <span class="status s-batal">Dibatalkan</span>
             @else
-                <p style="margin-bottom:.75rem; color:#6b7280;">Belum ada ulasan untuk pesanan ini.</p>
-                <a href="{{ route('pelanggan.ulasan.create', $pesanan->id) }}" class="btn btn-warning">Tulis Ulasan</a>
+                <div class="level">
+                    <div class="tabung" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="{{ $step }}" aria-label="Progres pesanan">
+                        <span style="width:{{ $percent }}%"></span>
+                    </div>
+                    <div class="label">
+                        <b>{{ $stepText }}</b>
+                        <span>Langkah {{ $step }} dari 4</span>
+                    </div>
+                </div>
             @endif
-        </div>
-    @endif
 
-    {{-- Pembayaran --}}
-    @if($pesanan->pembayaran)
-        {{-- ── Info Pembayaran yang sudah ada ── --}}
-        <div class="card">
-            <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:.75rem;">💳 Pembayaran</h2>
-            <table style="border-collapse:collapse; width:100%;">
-                <tr>
-                    <td style="padding:.5rem .75rem; font-weight:600; width:200px;">Metode</td>
-                    <td style="padding:.5rem .75rem; text-transform:capitalize;">{{ $pesanan->pembayaran->metode }}</td>
-                </tr>
-                <tr>
-                    <td style="padding:.5rem .75rem; font-weight:600;">Status</td>
-                    <td style="padding:.5rem .75rem;">
-                        <span class="badge badge-{{ $pesanan->pembayaran->status === 'lunas' ? 'selesai' : ($pesanan->pembayaran->status === 'ditolak' ? 'dibatalkan' : 'menunggu') }}">
-                            {{ $pesanan->pembayaran->status }}
-                        </span>
-                    </td>
-                </tr>
-                @if($pesanan->pembayaran->bukti_bayar)
-                <tr>
-                    <td style="padding:.5rem .75rem; font-weight:600;">Bukti Pembayaran</td>
-                    <td style="padding:.5rem .75rem;">
-                        <img src="{{ asset('storage/' . $pesanan->pembayaran->bukti_bayar) }}"
-                             alt="Bukti Pembayaran"
-                             style="max-width:320px; border-radius:8px; border:1px solid #e5e7eb; cursor:pointer;"
-                             onclick="window.open(this.src, '_blank')">
-                    </td>
-                </tr>
+            <dl class="info">
+                <dt>Alamat</dt>
+                <dd>{{ $pesanan->alamat }}</dd>
+                <dt>Catatan</dt>
+                <dd>{{ $pesanan->catatan ?: '-' }}</dd>
+                <dt>Petugas</dt>
+                @if($pesanan->petugas)
+                    <dd>{{ $pesanan->petugas->nama }} @if($pesanan->petugas->no_hp) · <a href="tel:{{ $pesanan->petugas->no_hp }}">{{ $pesanan->petugas->no_hp }}</a>@endif</dd>
+                @else
+                    <dd>Belum ada</dd>
                 @endif
-            </table>
+                <dt>Harga</dt>
+                <dd class="angka">Rp{{ number_format($pesanan->total_harga, 0, ',', '.') }}</dd>
+            </dl>
         </div>
-    @elseif($pesanan->status !== 'dibatalkan')
-        {{-- ── Form Pembayaran Baru ── --}}
-        <div class="card">
-            <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:.75rem;">💳 Pembayaran</h2>
 
-            {{-- Ringkasan total harga --}}
-            <div style="background:linear-gradient(135deg,#ecfdf5,#d1fae5); border-radius:10px; padding:1rem 1.25rem; margin-bottom:1.25rem; display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <p style="font-size:.85rem; color:#065f46; margin-bottom:.15rem;">Total yang harus dibayar</p>
-                    <p style="font-size:1.5rem; font-weight:800; color:#047857;">Rp{{ number_format($pesanan->total_harga, 0, ',', '.') }}</p>
+        @if($pesanan->status === 'menunggu')
+            <button type="button" class="btn btn-teks bahaya" onclick="document.getElementById('dialog-batal').showModal()" style="margin:8px 0 0 -10px;">Batalkan pesanan</button>
+        @elseif($pesanan->status === 'dibatalkan')
+            <a href="{{ route('pelanggan.pesanan.create', ['paket' => $pesanan->paket_layanan_id]) }}" class="btn btn-kedua" style="margin-top:16px;">Pesan lagi</a>
+        @endif
+    </section>
+
+    @if($pesanan->status !== 'dibatalkan')
+        <section>
+            <h2 class="bagian" id="bayar">💳 Pembayaran</h2>
+
+            @if($pesanan->pembayaran)
+                <div class="daftar">
+                    <div class="baris">
+                        <span>
+                            <span class="judul-baris" style="text-transform: capitalize;">{{ $pesanan->pembayaran->metode }}</span>
+                            <span class="sub-baris">
+                                Status: {{ $pesanan->pembayaran->status }}
+                                @if($pesanan->pembayaran->bukti_bayar)
+                                    · <a href="{{ asset('storage/' . $pesanan->pembayaran->bukti_bayar) }}" target="_blank" style="text-decoration:underline;">Bukti Pembayaran</a>
+                                @endif
+                            </span>
+                        </span>
+                        @if($pesanan->pembayaran->status === 'lunas')
+                            <span class="status s-beres">Lunas</span>
+                        @elseif($pesanan->pembayaran->status === 'ditolak')
+                            <span class="status s-batal">Ditolak</span>
+                        @else
+                            <span class="status s-tunggu">Menunggu</span>
+                        @endif
+                    </div>
                 </div>
-                <span style="font-size:2rem;">🧾</span>
-            </div>
+            @else
+                <div class="kartu">
+                    <form action="{{ route('pelanggan.pembayaran.store', $pesanan->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <p class="sub-baris" style="margin-bottom:12px;">Total yang harus dibayar: <b style="color:var(--tinta);">Rp{{ number_format($pesanan->total_harga, 0, ',', '.') }}</b></p>
+                        <fieldset class="pilihan isian">
+                            <legend class="sr">Cara bayar</legend>
+                            <div class="segmen">
+                                <label class="opsi">
+                                    <input type="radio" name="metode" value="transfer" checked onchange="toggleBukti(true)"> Transfer
+                                </label>
+                                <label class="opsi">
+                                    <input type="radio" name="metode" value="tunai" onchange="toggleBukti(false)"> Tunai
+                                </label>
+                            </div>
+                        </fieldset>
 
-            @if($errors->any())
-                <div class="alert alert-error">
-                    <ul style="margin:0; padding-left:1.25rem;">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                        <div class="isian" id="isian-bukti">
+                            <p class="sub-baris">Rekening: <b style="color:var(--tinta);">BCA 1234567890 a.n. Bersihin</b></p>
+                            <p class="judul-isian">Upload Bukti Pembayaran</p>
+                            <div class="berkas">
+                                <label class="btn btn-kedua btn-kecil pilih-berkas">
+                                    Pilih foto
+                                    <input type="file" id="bukti_bayar" name="bukti_bayar" accept="image/jpeg,image/png" onchange="previewBukti(this)" aria-describedby="nama-bukti">
+                                </label>
+                                <span class="sub-baris" id="nama-bukti">JPG atau PNG, maks. 2 MB</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-utama btn-penuh">Kirim Pembayaran</button>
+                    </form>
                 </div>
             @endif
 
-            <form action="{{ route('pelanggan.pembayaran.store', $pesanan->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-
-                {{-- Pilihan Metode --}}
-                <div class="form-group">
-                    <label>Metode Pembayaran</label>
-                    <div style="display:flex; gap:.75rem; margin-top:.35rem;">
-                        {{-- Tombol Transfer --}}
-                        <label id="label-transfer" style="flex:1; cursor:pointer;">
-                            <input type="radio" name="metode" value="transfer" {{ old('metode', 'transfer') === 'transfer' ? 'checked' : '' }}
-                                   style="display:none;" onchange="toggleMetode()">
-                            <div class="metode-option" id="opt-transfer">
-                                <span style="font-size:1.35rem;">🏦</span>
-                                <span style="font-weight:600;">Transfer</span>
-                                <span style="font-size:.75rem; color:#6b7280;">Upload bukti bayar</span>
-                            </div>
-                        </label>
-                        {{-- Tombol Tunai --}}
-                        <label id="label-tunai" style="flex:1; cursor:pointer;">
-                            <input type="radio" name="metode" value="tunai" {{ old('metode') === 'tunai' ? 'checked' : '' }}
-                                   style="display:none;" onchange="toggleMetode()">
-                            <div class="metode-option" id="opt-tunai">
-                                <span style="font-size:1.35rem;">💵</span>
-                                <span style="font-weight:600;">Tunai</span>
-                                <span style="font-size:.75rem; color:#6b7280;">Bayar langsung</span>
-                            </div>
-                        </label>
-                    </div>
-                    @error('metode')
-                        <p class="text-danger">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Area Upload Bukti Bayar (hanya muncul jika transfer) --}}
-                <div class="form-group" id="upload-area">
-                    <label for="bukti_bayar">Upload Bukti Pembayaran</label>
-                    <div id="dropzone" style="border:2px dashed #d1d5db; border-radius:10px; padding:2rem 1rem; text-align:center; cursor:pointer; transition:border-color .2s, background .2s;"
-                         onclick="document.getElementById('bukti_bayar').click()">
-                        <input type="file" name="bukti_bayar" id="bukti_bayar" accept="image/jpeg,image/png,image/jpg"
-                               style="display:none;" onchange="previewImage(event)">
-                        <div id="upload-placeholder">
-                            <span style="font-size:2.5rem; display:block; margin-bottom:.5rem;">📤</span>
-                            <p style="font-weight:600; color:#374151;">Klik atau seret file ke sini</p>
-                            <p style="font-size:.8rem; color:#9ca3af;">Format: JPG, JPEG, PNG — Maks 2 MB</p>
+            @if($pesanan->status === 'selesai')
+                <h2 class="bagian">Ulasan</h2>
+                @if($pesanan->ulasan)
+                    <div class="kartu">
+                        <div class="atas">
+                            <span class="status s-beres">⭐ {{ $pesanan->ulasan->rating }}/5</span>
                         </div>
-                        <div id="upload-preview" style="display:none;">
-                            <img id="preview-img" src="" alt="Preview"
-                                 style="max-width:280px; max-height:200px; border-radius:8px; border:1px solid #e5e7eb;">
-                            <p style="margin-top:.5rem; font-size:.85rem; color:#059669; font-weight:600;" id="file-name"></p>
+                        @if($pesanan->ulasan->komentar)
+                            <p style="margin-top:12px;">{{ $pesanan->ulasan->komentar }}</p>
+                        @endif
+                    </div>
+                @else
+                    <div class="daftar">
+                        <div class="baris">
+                            <span class="judul-baris">Belum diulas</span>
+                            <a href="{{ route('pelanggan.ulasan.create', $pesanan->id) }}" class="btn btn-kedua btn-kecil">Kasih ulasan</a>
                         </div>
                     </div>
-                    @error('bukti_bayar')
-                        <p class="text-danger">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width:100%; padding:.75rem; font-size:1rem; margin-top:.5rem;">
-                    Kirim Pembayaran
-                </button>
-            </form>
-        </div>
+                @endif
+            @endif
+        </section>
     @endif
-@endsection
+</div>
 
-@push('styles')
-<style>
-    .metode-option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: .25rem;
-        padding: 1rem .75rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 10px;
-        transition: all .2s;
-        background: #fff;
-    }
-    .metode-option.active {
-        border-color: #0f9b58;
-        background: #ecfdf5;
-        box-shadow: 0 0 0 3px rgba(15,155,88,.15);
-    }
-    .metode-option:hover {
-        border-color: #a7f3d0;
-    }
-    #dropzone:hover, #dropzone.dragover {
-        border-color: #0f9b58;
-        background: #f0fdf4;
-    }
-</style>
-@endpush
+@if($pesanan->status === 'menunggu')
+    <dialog id="dialog-batal" aria-labelledby="judul-batal">
+        <h2 id="judul-batal">Batalkan pesanan ini?</h2>
+        <p>Pesanan yang dibatalkan nggak bisa dibalikin.</p>
+        <form action="{{ route('pelanggan.pesanan.batalkan', $pesanan->id) }}" method="POST" class="aksi">
+            @csrf
+            <button type="button" class="btn btn-teks" onclick="document.getElementById('dialog-batal').close()">Nggak jadi</button>
+            <button type="submit" class="btn btn-bahaya btn-kecil">Ya, batalkan</button>
+        </form>
+    </dialog>
+@endif
 
 @push('scripts')
 <script>
-    function toggleMetode() {
-        const metode = document.querySelector('input[name="metode"]:checked')?.value;
-        const uploadArea = document.getElementById('upload-area');
-        const optTransfer = document.getElementById('opt-transfer');
-        const optTunai = document.getElementById('opt-tunai');
-
-        // Toggle active class
-        optTransfer.classList.toggle('active', metode === 'transfer');
-        optTunai.classList.toggle('active', metode === 'tunai');
-
-        // Show/hide upload area
-        uploadArea.style.display = metode === 'transfer' ? 'block' : 'none';
-
-        // Clear file input jika pindah ke tunai
-        if (metode === 'tunai') {
-            document.getElementById('bukti_bayar').value = '';
-            document.getElementById('upload-placeholder').style.display = 'block';
-            document.getElementById('upload-preview').style.display = 'none';
+    function toggleBukti(isTransfer) {
+        const isian = document.getElementById('isian-bukti');
+        if (isian) {
+            isian.style.display = isTransfer ? 'grid' : 'none';
         }
     }
 
-    function previewImage(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        // Validasi ukuran di client-side
-        if (file.size > 2048 * 1024) {
-            alert('Ukuran file melebihi 2 MB. Silakan pilih file yang lebih kecil.');
-            event.target.value = '';
-            return;
+    function previewBukti(input) {
+        const nama = document.getElementById('nama-bukti');
+        if (input.files && input.files[0]) {
+            nama.textContent = input.files[0].name;
         }
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('preview-img').src = e.target.result;
-            document.getElementById('file-name').textContent = file.name;
-            document.getElementById('upload-placeholder').style.display = 'none';
-            document.getElementById('upload-preview').style.display = 'block';
-        };
-        reader.readAsDataURL(file);
     }
-
-    // Drag-and-drop support
-    const dropzone = document.getElementById('dropzone');
-    if (dropzone) {
-        ['dragenter', 'dragover'].forEach(evt =>
-            dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); })
-        );
-        ['dragleave', 'drop'].forEach(evt =>
-            dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dragover'); })
-        );
-        dropzone.addEventListener('drop', e => {
-            const files = e.dataTransfer.files;
-            if (files.length) {
-                document.getElementById('bukti_bayar').files = files;
-                previewImage({ target: { files: files } });
-            }
-        });
-    }
-
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', toggleMetode);
 </script>
 @endpush
+@endsection

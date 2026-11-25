@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'no_hp',
+        'foto',
         'role',
         'status_verifikasi',
     ];
@@ -50,8 +51,9 @@ class User extends Authenticatable
     public function dashboardRouteName(): ?string
     {
         return match ($this->role) {
+            'admin' => 'admin.beranda',
             'petugas' => 'petugas.dashboard',
-            'pelanggan' => 'pelanggan.pesanan.index',
+            'pelanggan' => 'pelanggan.beranda',
             default => null,
         };
     }

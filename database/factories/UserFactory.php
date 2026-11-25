@@ -12,34 +12,50 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
     protected static ?string $password;
 
     /**
      * Define the model's default state.
      *
-     *@return array<string, mixed>
+     * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
-            'nama' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'password' => static::$password ??= Hash::make('password'),
-            'no_hp' => '08' . fake()->numerify('##########'),
-            'role' => 'pelanggan',
-            'status_verifikasi' => 'menunggu',
-            'remember_token' => Str::random(10),
+            'nama'              => fake()->name(),
+            'email'             => fake()->unique()->safeEmail(),
+            'password'          => static::$password ??= Hash::make('password'),
+            'no_hp'             => fake()->numerify('08##########'),
+            'role'              => 'pelanggan',
+            'status_verifikasi' => 'terverifikasi',
+            'remember_token'    => Str::random(10),
         ];
     }
 
+    /** State: role admin */
+    public function admin(): static
+    {
+        return $this->state(fn () => [
+            'role'              => 'admin',
+            'status_verifikasi' => 'terverifikasi',
+        ]);
+    }
+
+    /** State: role petugas terverifikasi */
     public function petugas(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'role' => 'petugas',
+        return $this->state(fn () => [
+            'role'              => 'petugas',
             'status_verifikasi' => 'terverifikasi',
+        ]);
+    }
+
+    /** State: petugas menunggu verifikasi */
+    public function petugasMenunggu(): static
+    {
+        return $this->state(fn () => [
+            'role'              => 'petugas',
+            'status_verifikasi' => 'menunggu',
         ]);
     }
 }

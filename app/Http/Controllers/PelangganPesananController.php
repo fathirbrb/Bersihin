@@ -6,6 +6,7 @@ use App\Http\Requests\StorePesananRequest;
 use App\Models\PaketLayanan;
 use App\Models\Pesanan;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -18,6 +19,22 @@ class PelangganPesananController extends Controller
         }
     }
 
+    public function beranda(): View
+    {
+        $this->cekPelanggan();
+
+        $pesananAktif = Pesanan::with(['paketLayanan', 'petugas', 'pembayaran'])
+            ->where('pelanggan_id', Auth::id())
+            ->whereIn('status', ['menunggu', 'diterima', 'dikerjakan'])
+            ->latest('tanggal')
+            ->latest('jam_mulai')
+            ->first();
+
+        $paketLayanan = PaketLayanan::orderBy('harga')->get();
+
+        return view('pelanggan.beranda', compact('pesananAktif', 'paketLayanan'));
+    }
+
     public function index(): View
     {
         $this->cekPelanggan();
@@ -28,23 +45,27 @@ class PelangganPesananController extends Controller
             ->latest('jam_mulai')
             ->get();
 
-        return view('pelanggan.pesanan.index', compact('pesanan'));
+        $pesananJalan = $pesanan->whereIn('status', ['menunggu', 'diterima', 'dikerjakan']);
+        $riwayat = $pesanan->whereIn('status', ['selesai', 'dibatalkan']);
+
+        return view('pelanggan.pesanan.index', compact('pesanan', 'pesananJalan', 'riwayat'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
         $this->cekPelanggan();
 
         $paketLayanan = PaketLayanan::orderBy('harga')->get();
+        $selectedPaketId = $request->query('paket');
 
-        return view('pelanggan.pesanan.create', compact('paketLayanan'));
+        return view('pelanggan.pesanan.create', compact('paketLayanan', 'selectedPaketId'));
     }
 
     public function store(StorePesananRequest $request): RedirectResponse
     {
         $paket = PaketLayanan::findOrFail($request->paket_layanan_id);
 
-        Pesanan::create([
+        $pesanan = Pesanan::create([
             'pelanggan_id'     => Auth::id(),
             'paket_layanan_id' => $paket->id,
             'alamat'           => $request->alamat,
@@ -56,8 +77,8 @@ class PelangganPesananController extends Controller
         ]);
 
         return redirect()
-            ->route('pelanggan.pesanan.index')
-            ->with('success', 'Pesanan berhasil dibuat dan menunggu petugas.');
+            ->route('pelanggan.pesanan.show', $pesanan->id)
+            ->with('success', 'Pesanan berhasil dibuat. Silakan lakukan pembayaran.');
     }
 
     public function show(int $id): View

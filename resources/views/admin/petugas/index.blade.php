@@ -1,62 +1,60 @@
 @extends('layouts.admin')
 
-@section('title', 'Verifikasi Petugas')
+@section('title', 'Petugas')
 
 @section('content')
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
-        <h1 class="page-title" style="margin-bottom:0;">Verifikasi Petugas</h1>
+    <div class="kepala">
+        <h1>Petugas<span class="sr"> - Verifikasi Petugas</span></h1>
+        <p>{{ $petugas->count() }} terdaftar, {{ $petugasMenungguCount }} nunggu dicek</p>
     </div>
 
-    <div class="card">
-        <div class="table-wrap">
-            @if($petugas->isEmpty())
-                <div class="empty-state">
-                    <p>Belum ada petugas terdaftar.</p>
-                </div>
-            @else
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>No. HP</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($petugas as $index => $item)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $item->nama }}</td>
-                                <td>{{ $item->email }}</td>
-                                <td>{{ $item->no_hp }}</td>
-                                <td>
-                                    <span class="badge badge-{{ $item->status_verifikasi }}">
-                                        {{ str_replace('_', ' ', $item->status_verifikasi) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <form action="{{ route('admin.petugas.verifikasi', $item->id) }}" method="POST"
-                                          style="display:flex; gap:.5rem; align-items:center;">
-                                        @csrf
-                                        @method('PUT')
-                                        <select name="status_verifikasi" class="form-control" style="width:auto; min-width:140px;">
-                                            <option value="menunggu" {{ $item->status_verifikasi === 'menunggu' ? 'selected' : '' }}>Menunggu</option>
-                                            <option value="terverifikasi" {{ $item->status_verifikasi === 'terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
-                                            <option value="ditolak" {{ $item->status_verifikasi === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-primary" style="padding:.4rem .9rem; font-size:.8rem;">
-                                            Simpan
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+    @if($petugas->isEmpty())
+        <div class="kosong">
+            <b>Belum ada petugas</b>
+            <span>Petugas yang daftar muncul di sini.</span>
         </div>
-    </div>
+    @else
+        <div class="tabel-wadah">
+            <table class="tabel">
+                <thead>
+                    <tr><th>Nama</th><th>Email</th><th>No. HP</th><th>Daftar</th><th>Status</th><th class="kanan">Aksi</th></tr>
+                </thead>
+                <tbody>
+                    @foreach($petugas as $item)
+                        <tr @if($item->status_verifikasi === 'menunggu') class="sorot" @endif>
+                            <td data-label="Nama"><b style="font-weight:500;">{{ $item->nama }}</b></td>
+                            <td data-label="Email">{{ $item->email }}</td>
+                            <td data-label="No. HP" class="angka">{{ $item->no_hp }}</td>
+                            <td data-label="Daftar" class="angka">{{ $item->created_at->translatedFormat('d M Y') }}</td>
+                            <td data-label="Status">
+                                @if($item->status_verifikasi === 'menunggu')
+                                    <span class="status s-tunggu">Menunggu</span>
+                                @elseif($item->status_verifikasi === 'terverifikasi')
+                                    <span class="status s-beres">Terverifikasi</span>
+                                @elseif($item->status_verifikasi === 'ditolak')
+                                    <span class="status s-batal">Ditolak</span>
+                                @else
+                                    <span class="status s-netral">{{ ucfirst($item->status_verifikasi) }}</span>
+                                @endif
+                            </td>
+                            <td data-label="">
+                                <form action="{{ route('admin.petugas.verifikasi', $item->id) }}" method="POST" class="aksi">
+                                    @csrf
+                                    @method('PUT')
+                                    @if($item->status_verifikasi === 'menunggu')
+                                        <button type="submit" name="status_verifikasi" value="ditolak" class="btn btn-teks bahaya">Tolak</button>
+                                        <button type="submit" name="status_verifikasi" value="terverifikasi" class="btn btn-utama btn-kecil">Verifikasi</button>
+                                    @elseif($item->status_verifikasi === 'terverifikasi')
+                                        <button type="submit" name="status_verifikasi" value="ditolak" class="btn btn-teks bahaya">Cabut verifikasi</button>
+                                    @elseif($item->status_verifikasi === 'ditolak')
+                                        <button type="submit" name="status_verifikasi" value="terverifikasi" class="btn btn-utama btn-kecil">Verifikasi</button>
+                                    @endif
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
 @endsection
