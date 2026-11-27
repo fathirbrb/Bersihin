@@ -1,9 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "fathirbrb/bersihin",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Aplikasi pemesanan jasa kebersihan rumah.",
+    "keywords": ["laravel", "kebersihan"],
     "license": "MIT",
     "require": {
         "php": "^8.2",

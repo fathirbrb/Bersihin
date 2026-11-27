@@ -6,7 +6,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12">
-  <img src="https://img.shields.io/badge/PostgreSQL-16%2B-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/PostgreSQL-14%2B-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.2+">
   <img src="https://img.shields.io/badge/Design_System-bersihin.css-2453D8?style=for-the-badge" alt="bersihin.css">
 </p>
@@ -41,7 +41,7 @@
 - **Beranda**: Menampilkan kartu pesanan aktif ("Lagi jalan") dengan indikator progres 4 tahap, tombol bayar cepat, dan daftar paket untuk pemesanan ulang.
 - **Pemesanan Layanan**: Form pemilihan paket layanan, tanggal, jam mulai, alamat, dan catatan khusus.
 - **Pesananku**: Daftar pesanan aktif dan riwayat pesanan dengan indikator status.
-- **Detail dan Pembayaran**: Unggah bukti bayar transfer bank (JPG/PNG maks 2 MB) atau pilih bayar tunai, serta pembatalan pesanan mandiri selama status masih menunggu.
+- **Detail dan Pembayaran**: Unggah bukti bayar transfer bank (JPG/PNG maks 2 MB) atau pilih bayar tunai. Pembayaran yang ditolak bisa dikirim ulang. Pesanan bisa dibatalkan selama masih menunggu dan belum lunas.
 - **Ulasan dan Rating**: Penilaian bintang 1-5 dan komentar untuk pesanan yang telah selesai.
 - **Kelola Profil**: Ganti atau hapus foto profil, pembaruan kontak, dan pergantian kata sandi.
 
@@ -101,10 +101,12 @@ DB_DATABASE=bersihin
 DB_USERNAME=postgres
 DB_PASSWORD=secret
 
-BANK_NAMA=BCA
-BANK_NOMOR=7000123456
-BANK_ATAS_NAMA=Bersihin
+BANK_NAMA=
+BANK_NOMOR=
+BANK_ATAS_NAMA=
 ```
+
+Selama ketiga isian rekening kosong, halaman pembayaran meminta pelanggan menghubungi admin.
 
 ### 4. Migrasi dan Seeder Database
 Pastikan database `bersihin` sudah dibuat di PostgreSQL, lalu jalankan:
@@ -113,7 +115,7 @@ php artisan migrate:fresh --seed
 ```
 
 ### 5. Hubungkan Direktori Storage
-Jalankan perintah berikut agar unggahan foto profil dan bukti bayar dapat diakses melalui `public/storage`:
+Jalankan perintah berikut agar foto profil dapat diakses melalui `public/storage`. Bukti bayar disimpan privat dan hanya bisa dibuka admin serta pemilik pesanan.
 ```bash
 php artisan storage:link
 ```
@@ -167,7 +169,7 @@ php artisan test
 Bersihin/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/        # Controller Admin, Petugas, Pelanggan, Auth, Profil
+│   │   ├── Controllers/        # Controller Admin, Petugas, Pelanggan, Auth, Landing
 │   │   ├── Middleware/         # EnsureRole (proteksi role berlapis)
 │   │   └── Requests/           # Form Requests validasi terpusat
 │   └── Models/                 # Eloquent Models (User, Pesanan, PaketLayanan, Pembayaran, Ulasan)
@@ -176,10 +178,11 @@ Bersihin/
 ├── database/
 │   ├── migrations/             # Skema dan constraint tabel database
 │   └── seeders/                # Data awal pengguna demo dan paket layanan
+├── lang/id/                    # Pesan validasi bahasa Indonesia
 ├── public/
 │   ├── css/bersihin.css        # Token desain utama aplikasi
 │   ├── img/                    # Gambar pratinjau landing page
-│   └── storage/                # Symlink berkas unggahan (foto profil dan bukti transfer)
+│   └── storage/                # Symlink foto profil
 ├── resources/
 │   └── views/
 │       ├── layouts/            # Layout responsif (pelanggan, petugas, admin, auth)

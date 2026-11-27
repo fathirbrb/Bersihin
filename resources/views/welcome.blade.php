@@ -124,7 +124,7 @@
         <section class="pembuka">
             <div>
                 <h1>Rumahmu dibersihin, kamu tinggal <em>santai</em>.</h1>
-                <p class="lead">Pesan petugas kebersihan dalam hitungan menit. Harga pasti per paket tanpa tawar-menawar, dan bayar lewat transfer atau tunai di lokasi.</p>
+                <p class="lead">Pesan petugas kebersihan dari HP. Harga pasti per paket tanpa tawar-menawar, dan bayar lewat transfer atau tunai di lokasi.</p>
                 <div class="aksi">
                     <a href="{{ route('register') }}" class="btn btn-utama">Pesan petugas</a>
                     <a href="#paket" class="btn btn-kedua">Lihat paket</a>
@@ -137,7 +137,7 @@
             </div>
 
             <div class="contoh">
-                <img src="{{ asset('img/pratinjau-beranda.png') }}" width="860" height="1520" alt="Tampilan beranda pelanggan di aplikasi Bersihin yang menampilkan kartu pesanan aktif dan progres pengerjaan">
+                <img src="{{ asset('img/pratinjau-beranda.png') }}" width="860" height="1520" fetchpriority="high" alt="Tampilan beranda pelanggan di aplikasi Bersihin yang menampilkan kartu pesanan aktif dan progres pengerjaan">
             </div>
         </section>
 
@@ -155,7 +155,7 @@
                 <div class="daftar keunggulan-daftar">
                     <div class="baris">
                         <div>
-                            <h3>Pendaftaran petugas diperiksa admin</h3>
+                            <h3>Petugas diverifikasi dulu</h3>
                             <p>Petugas baru menunggu verifikasi admin sebelum bisa menerima pesanan.</p>
                         </div>
                     </div>
@@ -194,7 +194,7 @@
 
         <section class="alur" id="alur">
             <h2>Dari pesan sampai beres</h2>
-            <p class="lead">Pantau status pesanan di halaman pesananmu dari browser HP.</p>
+            <p class="lead">Statusnya terlihat di halaman pesananmu, langsung dari browser HP.</p>
             <ol class="tahap">
                 <li>
                     <div class="tabung"><span style="width:25%"></span></div>
@@ -214,17 +214,17 @@
                 <li>
                     <div class="tabung"><span style="width:100%"></span></div>
                     <b>4. Beres</b>
-                    <p>Pekerjaan selesai, beri rating dan ulasan setelah pesanan selesai.</p>
+                    <p>Pekerjaan selesai. Kamu bisa memberi rating dan ulasan.</p>
                 </li>
             </ol>
             <div class="bayar">
                 <div>
                     <b>Transfer Bank</b>
-                    <span>Unggah foto bukti transfer, admin mengonfirmasi bukti transfer.</span>
+                    <span>Unggah foto bukti transfer, lalu tunggu konfirmasi admin.</span>
                 </div>
                 <div>
                     <b>Tunai di Lokasi</b>
-                    <span>Bayar lewat transfer atau tunai di lokasi kepada petugas.</span>
+                    <span>Bayar langsung ke petugas di lokasi.</span>
                 </div>
             </div>
         </section>
@@ -256,7 +256,7 @@
                 <h2>Mau bergabung jadi mitra petugas?</h2>
                 <p>Daftar sekarang, tunggu verifikasi admin, lalu mulai ambil pesanan dengan jam kerja fleksibel.</p>
             </div>
-            <a href="{{ route('register') }}" class="btn btn-kedua">Daftar jadi petugas</a>
+            <a href="{{ route('register') }}" class="btn btn-utama">Daftar jadi petugas</a>
         </section>
     </main>
 

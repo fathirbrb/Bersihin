@@ -8,21 +8,13 @@ use App\Models\Pesanan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class PelangganPesananController extends Controller
 {
-    private function cekPelanggan(): void
-    {
-        if (Auth::user()->role !== 'pelanggan') {
-            abort(403, 'Hanya pelanggan yang dapat mengakses halaman ini.');
-        }
-    }
-
     public function beranda(): View
     {
-        $this->cekPelanggan();
-
         $pesananAktif = Pesanan::with(['paketLayanan', 'petugas', 'pembayaran'])
             ->where('pelanggan_id', Auth::id())
             ->whereIn('status', ['menunggu', 'diterima', 'dikerjakan'])
@@ -37,8 +29,6 @@ class PelangganPesananController extends Controller
 
     public function index(): View
     {
-        $this->cekPelanggan();
-
         $pesanan = Pesanan::with(['paketLayanan', 'petugas', 'ulasan'])
             ->where('pelanggan_id', Auth::id())
             ->latest('tanggal')
@@ -53,8 +43,6 @@ class PelangganPesananController extends Controller
 
     public function create(Request $request): View
     {
-        $this->cekPelanggan();
-
         $paketLayanan = PaketLayanan::orderBy('harga')->get();
         $selectedPaketId = $request->query('paket');
 
@@ -71,6 +59,7 @@ class PelangganPesananController extends Controller
             'alamat'           => $request->alamat,
             'tanggal'          => $request->tanggal,
             'jam_mulai'        => $request->jam_mulai,
+            'durasi_jam'       => $paket->estimasi_durasi_jam,
             'catatan'          => $request->catatan,
             'total_harga'      => $paket->harga,
             'status'           => 'menunggu',
@@ -83,8 +72,6 @@ class PelangganPesananController extends Controller
 
     public function show(int $id): View
     {
-        $this->cekPelanggan();
-
         $pesanan = Pesanan::with(['paketLayanan', 'petugas', 'ulasan', 'pembayaran'])
             ->where('pelanggan_id', Auth::id())
             ->findOrFail($id);
@@ -94,17 +81,33 @@ class PelangganPesananController extends Controller
 
     public function batalkan(int $id): RedirectResponse
     {
-        $this->cekPelanggan();
+        $pesanan = Pesanan::with('pembayaran')->where('pelanggan_id', Auth::id())->findOrFail($id);
+        $pembayaran = $pesanan->pembayaran;
 
-        $pesanan = Pesanan::where('pelanggan_id', Auth::id())->findOrFail($id);
+        if ($pembayaran && $pembayaran->status === 'lunas') {
+            return redirect()
+                ->back()
+                ->with('error', 'Pesanan sudah dibayar. Hubungi admin untuk pembatalan.');
+        }
 
-        if ($pesanan->status !== 'menunggu') {
+        // Update bersyarat, anti balapan dengan petugas
+        $dibatalkan = DB::transaction(function () use ($pesanan, $pembayaran) {
+            $berubah = Pesanan::where('id', $pesanan->id)
+                ->where('status', 'menunggu')
+                ->update(['status' => 'dibatalkan']);
+
+            if ($berubah && $pembayaran && $pembayaran->status === 'menunggu') {
+                $pembayaran->update(['status' => 'ditolak']);
+            }
+
+            return $berubah;
+        });
+
+        if (! $dibatalkan) {
             return redirect()
                 ->back()
                 ->with('error', 'Pesanan tidak bisa dibatalkan karena sudah diproses.');
         }
-
-        $pesanan->update(['status' => 'dibatalkan']);
 
         return redirect()
             ->route('pelanggan.pesanan.index')

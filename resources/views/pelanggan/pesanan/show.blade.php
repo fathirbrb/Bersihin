@@ -10,8 +10,7 @@
 
 @php
     $mulaiCarbon = \Carbon\Carbon::parse($pesanan->tanggal->format('Y-m-d') . ' ' . $pesanan->jam_mulai);
-    $durasi = $pesanan->paketLayanan->estimasi_durasi_jam ?? 2;
-    $selesaiCarbon = $mulaiCarbon->copy()->addHours($durasi);
+    $selesaiCarbon = $mulaiCarbon->copy()->addHours($pesanan->durasi_jam);
 
     $step = match($pesanan->status) {
         'menunggu' => 1,
@@ -29,6 +28,9 @@
         default => ucfirst($pesanan->status),
     };
     $percent = $step * 25;
+
+    $bank = config('bersihin.bank');
+    $rekeningSiap = filled($bank['nama']) && filled($bank['nomor']) && filled($bank['atas_nama']);
 @endphp
 
 <div class="kepala">
@@ -89,7 +91,7 @@
                             <span class="sub-baris">
                                 Status: {{ ucfirst($pesanan->pembayaran->status) }}
                                 @if($pesanan->pembayaran->bukti_bayar)
-                                    · <a href="{{ asset('storage/' . $pesanan->pembayaran->bukti_bayar) }}" target="_blank" style="text-decoration:underline;">Bukti Pembayaran</a>
+                                    · <a href="{{ route('bukti-bayar', $pesanan->pembayaran->id) }}" target="_blank" style="text-decoration:underline;">Bukti Pembayaran</a>
                                 @endif
                             </span>
                         </span>
@@ -102,10 +104,15 @@
                         @endif
                     </div>
                 </div>
-            @else
-                <div class="kartu">
+            @endif
+
+            @if(! $pesanan->pembayaran || $pesanan->pembayaran->status === 'ditolak')
+                <div class="kartu" @if($pesanan->pembayaran) style="margin-top:12px;" @endif>
                     <form action="{{ route('pelanggan.pembayaran.store', $pesanan->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        @if($pesanan->pembayaran)
+                            <p class="sub-baris" style="margin-bottom:12px;">Pembayaran sebelumnya ditolak. Kirim ulang dengan bukti yang benar.</p>
+                        @endif
                         <p class="sub-baris" style="margin-bottom:12px;">Total yang harus dibayar: <b style="color:var(--tinta);">Rp{{ number_format($pesanan->total_harga, 0, ',', '.') }}</b></p>
                         <fieldset class="pilihan isian">
                             <legend class="sr">Cara bayar</legend>
@@ -120,7 +127,11 @@
                         </fieldset>
 
                         <div class="isian" id="isian-bukti">
-                            <p class="sub-baris">@php($bank = config('bersihin.bank'))Rekening: <b style="color:var(--tinta);">@if(filled($bank['nama']) && filled($bank['nomor']) && filled($bank['atas_nama'])){{ $bank['nama'] }} {{ $bank['nomor'] }} a.n. {{ $bank['atas_nama'] }}@else Rekening belum diatur, hubungi admin.@endif</b></p>
+                            @if($rekeningSiap)
+                                <p class="sub-baris">Rekening: <b style="color:var(--tinta);">{{ $bank['nama'] }} {{ $bank['nomor'] }} a.n. {{ $bank['atas_nama'] }}</b></p>
+                            @else
+                                <p class="sub-baris">Rekening belum diatur, hubungi admin.</p>
+                            @endif
                             <p class="judul-isian">Upload Bukti Pembayaran</p>
                             <div class="berkas">
                                 <label class="btn btn-kedua btn-kecil pilih-berkas">

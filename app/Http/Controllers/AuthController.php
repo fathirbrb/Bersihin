@@ -7,6 +7,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AuthController extends Controller
@@ -31,12 +33,26 @@ class AuthController extends Controller
 
         $kredensial = $request->only('email', 'password');
 
+        // Lima percobaan per menit, per email-IP
+        $kunci = Str::lower($request->input('email')) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($kunci, 5)) {
+            $detik = RateLimiter::availableIn($kunci);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => "Terlalu banyak percobaan. Coba lagi dalam {$detik} detik."]);
+        }
+
         if (!Auth::attempt($kredensial, $request->boolean('ingat_saya'))) {
+            RateLimiter::hit($kunci, 60);
+
             return back()
                 ->withInput($request->only('email'))
                 ->withErrors(['email' => 'Email atau kata sandi salah.']);
         }
 
+        RateLimiter::clear($kunci);
         $request->session()->regenerate();
 
         return $this->redirectBerdasarkanRole(Auth::user());
