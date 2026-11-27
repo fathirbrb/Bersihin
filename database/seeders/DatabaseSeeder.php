@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // ─── Akun Admin default ───────────────────────────────────────────
+        // Akun admin default
         User::updateOrCreate(
             ['email' => 'admin@bersihin.id'],
             [
@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // ─── Demo pelanggan ───────────────────────────────────────────────
+        // Demo pelanggan
         User::updateOrCreate(
             ['email' => 'pelanggan@bersihin.id'],
             [
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // ─── Demo petugas terverifikasi ───────────────────────────────────
+        // Demo petugas terverifikasi
         User::updateOrCreate(
             ['email' => 'petugas@bersihin.id'],
             [
@@ -47,8 +47,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // ─── 4 Paket Layanan sesuai SRS ───────────────────────────────────
-        // CATATAN: Harga dan estimasi_durasi_jam adalah nilai SEMENTARA — konfirmasi ke tim sebelum production.
+        // Paket layanan awal
         $pakets = [
             [
                 'nama_paket'          => 'Pembersihan Rutin',

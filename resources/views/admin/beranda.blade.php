@@ -15,7 +15,7 @@
             @if($pembayaranMenungguCount > 0)
                 <a href="{{ route('admin.pembayaran.index') }}" class="baris">
                     <span>
-                        <span class="judul-baris"><span class="angka">{{ $pembayaranMenungguCount }}</span> pembayaran nunggu konfirmasi</span>
+                        <span class="judul-baris"><span class="angka">{{ $pembayaranMenungguCount }}</span> pembayaran menunggu konfirmasi</span>
                         @if($pembayaranMenungguTerbaru)
                             <span class="sub-baris">Pesanan #{{ $pembayaranMenungguTerbaru->pesanan_id }}, {{ $pembayaranMenungguTerbaru->metode }}, {{ $pembayaranMenungguTerbaru->pesanan->pelanggan->nama ?? '-' }}</span>
                         @endif
@@ -27,7 +27,7 @@
             @if($petugasMenungguCount > 0)
                 <a href="{{ route('admin.petugas.index') }}" class="baris">
                     <span>
-                        <span class="judul-baris"><span class="angka">{{ $petugasMenungguCount }}</span> petugas nunggu verifikasi</span>
+                        <span class="judul-baris"><span class="angka">{{ $petugasMenungguCount }}</span> petugas menunggu verifikasi</span>
                         @if($petugasMenungguTerbaru)
                             <span class="sub-baris">{{ $petugasMenungguTerbaru->nama }}, daftar {{ $petugasMenungguTerbaru->created_at->translatedFormat('d F') }}</span>
                         @endif
@@ -39,7 +39,7 @@
     @else
         <div class="kosong" style="padding:28px 20px;">
             <b>Semua sudah dicek</b>
-            <span style="margin-bottom:0;">Nggak ada pembayaran atau petugas yang nunggu.</span>
+            <span style="margin-bottom:0;">Tidak ada pembayaran atau petugas yang menunggu.</span>
         </div>
     @endif
 

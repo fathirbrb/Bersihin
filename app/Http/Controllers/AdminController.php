@@ -25,7 +25,7 @@ class AdminController extends Controller
             if ($dashboardRoute) {
                 return redirect()
                     ->route($dashboardRoute)
-                    ->with('error', 'Anda tidak memiliki akses ke halaman admin.');
+                    ->with('error', 'Kamu tidak memiliki akses ke halaman admin.');
             }
 
             return abort(403, 'Akses ditolak.');
@@ -156,7 +156,7 @@ class AdminController extends Controller
         return redirect()->route('admin.profil')->with('success', 'Kata sandi sudah diganti.');
     }
 
-    // verif petugas F-02
+    // Verifikasi petugas
     public function indexPetugas()
     {
         $redirect = $this->cekAdmin();
@@ -200,7 +200,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', $pesan);
     }
 
-    // kelola harga dan deskripsi F-03
+    // Kelola harga dan deskripsi paket
     public function indexPaket()
     {
         $redirect = $this->cekAdmin();
@@ -234,7 +234,7 @@ class AdminController extends Controller
         return redirect()->route('admin.paket.index')->with('success', 'Paket disimpan.');
     }
 
-    // lihat daftar seluruh pesanan F-09
+    // Daftar seluruh pesanan
     public function indexPesanan()
     {
         $redirect = $this->cekAdmin();
@@ -259,7 +259,7 @@ class AdminController extends Controller
         return view('admin.pesanan', compact('pesanan', 'countStatus'));
     }
 
-    // konfirmasi pembayaran F-07
+    // Konfirmasi pembayaran
     public function indexPembayaran()
     {
         $redirect = $this->cekAdmin();

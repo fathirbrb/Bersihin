@@ -1,15 +1,11 @@
-# 🧹 Bersihin — Layanan Kebersihan Rumah 
+# Bersihin: Layanan Kebersihan Rumah
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fathirbrb/Bersihin/main/public/mockup/assets/logo.svg" width="64" height="64" alt="Bersihin Logo" onerror="this.style.display='none'">
+  <b>Platform pemesanan jasa kebersihan rumah dengan harga pasti per paket, pantauan status pesanan, serta pembayaran transfer dan tunai.</b>
 </p>
 
 <p align="center">
-  <b>Platform digital on-demand pemesanan jasa kebersihan rumah yang transparan, mudah, dan terpercaya.</b>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 11">
+  <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12">
   <img src="https://img.shields.io/badge/PostgreSQL-16%2B-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.2+">
   <img src="https://img.shields.io/badge/Design_System-bersihin.css-2453D8?style=for-the-badge" alt="bersihin.css">
@@ -17,65 +13,65 @@
 
 ---
 
-## 📌 Daftar Isi
-- [Gambaran Umum](#-gambaran-umum)
-- [Peran Pengguna & Fitur](#-peran-pengguna--fitur)
-- [Persyaratan Sistem](#-persyaratan-sistem)
-- [Panduan Instalasi & Menjalankan](#-panduan-instalasi--menjalankan)
-- [Struktur Database](#-struktur-database)
-- [Akun Demo / Testing](#-akun-demo--testing)
-- [Menjalankan Automated Tests](#-menjalankan-automated-tests)
-- [Struktur Proyek](#-struktur-proyek)
+## Daftar Isi
+- [Gambaran Umum](#gambaran-umum)
+- [Peran Pengguna dan Fitur](#peran-pengguna-dan-fitur)
+- [Persyaratan Sistem](#persyaratan-sistem)
+- [Panduan Instalasi dan Menjalankan](#panduan-instalasi-dan-menjalankan)
+- [Struktur Database](#struktur-database)
+- [Akun Demo / Testing](#akun-demo--testing)
+- [Menjalankan Automated Tests](#menjalankan-automated-tests)
+- [Struktur Proyek Kunci](#struktur-proyek-kunci)
 
 ---
 
-## 💡 Gambaran Umum
+## Gambaran Umum
 
-**Bersihin** hadir untuk mengatasi masalah ketidakpastian harga, rumitnya proses pencarian petugas kebersihan, serta ketiadaan pelacakan status kerja. Dengan Bersihin:
-- **Harga Pasti**: Tarif tetap per paket tanpa tawar-menawar di tempat.
-- **Petugas Terverifikasi**: Setiap mitra petugas melewati proses verifikasi identitas oleh Admin sebelum bertugas.
-- **Pelacakan Real-time (Mobile-First)**: Pelanggan memantau status pesanan (Menunggu → Diterima → Dikerjakan → Selesai) langsung dari browser HP dengan antarmuka navigasi jempol (*bottom navbar*).
-- **Fleksibilitas Pembayaran**: Mendukung transfer bank (dengan unggah bukti bayar) serta tunai di lokasi.
+**Bersihin** membantu pelanggan memesan layanan kebersihan rumah dengan alur yang jelas. Fitur utama aplikasi ini:
+- **Harga Pasti**: Tarif tetap per paket tanpa tawar-menawar di lokasi.
+- **Verifikasi Petugas**: Pendaftaran mitra petugas baru diperiksa dan diverifikasi Admin sebelum dapat menerima pesanan.
+- **Pantau Status Pesanan (Mobile-First)**: Pelanggan memantau status pesanan (Menunggu, Diterima, Dikerjakan, hingga Selesai) dari halaman pesanan dengan navigasi bawah (*bottom navbar*).
+- **Pilihan Pembayaran**: Mendukung transfer bank (dengan unggah bukti bayar) serta tunai di lokasi.
 
 ---
 
-## 👥 Peran Pengguna & Fitur
+## Peran Pengguna dan Fitur
 
-### 1. 👤 Pelanggan (Mobile-First)
-- **Beranda Interaktif**: Menampilkan kartu pesanan aktif ("Lagi jalan") dengan indikator progres air 4 tahap, tombol bayar cepat, dan riwayat pemesanan ulang.
-- **Pemesanan Layanan**: Form pemilihan paket layanan dinamis, penentuan tanggal, jam mulai, alamat, dan catatan khusus.
-- **Pesananku**: Daftar riwayat pesanan aktif dan lampau dengan indikator status dot matriks.
-- **Detail & Pembayaran**: Unggah bukti bayar transfer bank (JPG/PNG maks 2 MB) atau pilih bayar tunai, serta opsi pembatalan pesanan mandiri selama status masih menunggu.
-- **Ulasan & Rating**: Penilaian bintang 1–5 dan komentar untuk pesanan yang telah tuntas.
-- **Kelola Profil**: Ganti/hapus foto profil avatar, pembaruan kontak, dan pergantian kata sandi aman.
+### 1. Pelanggan (Mobile-First)
+- **Beranda**: Menampilkan kartu pesanan aktif ("Lagi jalan") dengan indikator progres 4 tahap, tombol bayar cepat, dan daftar paket untuk pemesanan ulang.
+- **Pemesanan Layanan**: Form pemilihan paket layanan, tanggal, jam mulai, alamat, dan catatan khusus.
+- **Pesananku**: Daftar pesanan aktif dan riwayat pesanan dengan indikator status.
+- **Detail dan Pembayaran**: Unggah bukti bayar transfer bank (JPG/PNG maks 2 MB) atau pilih bayar tunai, serta pembatalan pesanan mandiri selama status masih menunggu.
+- **Ulasan dan Rating**: Penilaian bintang 1-5 dan komentar untuk pesanan yang telah selesai.
+- **Kelola Profil**: Ganti atau hapus foto profil, pembaruan kontak, dan pergantian kata sandi.
 
-### 2. 👷 Mitra Petugas
+### 2. Mitra Petugas
 - **Dashboard Kerja**: Ringkasan tugas dan status verifikasi akun.
-- **Pesanan Masuk**: Mengambil pesanan yang tersedia dengan proteksi deteksi bentrok jadwal otomatis.
-- **Alur Pengerjaan**: Mengubah status pengerjaan secara bertahap (`Terima` → `Kerjakan` → `Selesai`).
-- **Ulasan Saya**: Memantau kepuasan dan rating yang diberikan oleh pelanggan.
+- **Pesanan Masuk**: Mengambil pesanan yang tersedia dengan deteksi bentrok jadwal otomatis.
+- **Alur Pengerjaan**: Mengubah status pengerjaan secara bertahap (`Terima` -> `Kerjakan` -> `Selesai`).
+- **Ulasan Saya**: Melihat rating dan komentar yang diberikan pelanggan.
+- **Profil**: Pengaturan data diri, foto profil, dan kata sandi.
 
-### 3. 👑 Administrator (Desktop View)
-- **Verifikasi Petugas**: Memvalidasi atau menolak pendaftaran mitra petugas baru.
+### 3. Administrator (Desktop View)
+- **Beranda**: Ringkasan antrean pembayaran dan verifikasi petugas beserta pesanan terbaru.
+- **Verifikasi Petugas**: Memverifikasi atau menolak pendaftaran mitra petugas baru.
 - **Kelola Paket Layanan**: Mengatur nama paket, estimasi durasi jam, deskripsi, dan tarif harga.
 - **Konfirmasi Pembayaran**: Memeriksa bukti transfer pelanggan dan mengubah status menjadi `Lunas` atau `Ditolak`.
-- **Monitoring Pesanan**: Rekapitulasi seluruh pesanan yang berjalan di sistem.
+- **Monitoring Pesanan**: Rekapitulasi seluruh pesanan dengan penyaring status.
 
 ---
 
-## ⚙️ Persyaratan Sistem
+## Persyaratan Sistem
 
-Pastikan perangkat Anda telah terpasang:
-- **PHP** >= 8.2 (dengan ekstensi `pdo_pgsql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `fileinfo`)
+Pastikan perangkat sudah terpasang:
+- **PHP** >= 8.2 (ekstensi `pdo_pgsql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `fileinfo`)
 - **Composer** >= 2.x
-- **Node.js** >= 18.x & **NPM**
-- **PostgreSQL** >= 14 (misal: Postgres.app / Homebrew / Docker)
+- **Node.js** >= 18.x dan **NPM** (bila membangun aset Vite)
+- **PostgreSQL** >= 14
 
 ---
 
-## 🚀 Panduan Instalasi & Menjalankan
-
-Ikuti langkah-langkah berikut untuk menjalankan proyek di komputer lokal:
+## Panduan Instalasi dan Menjalankan
 
 ### 1. Clone Repositori
 ```bash
@@ -85,21 +81,18 @@ cd Bersihin
 
 ### 2. Pasang Dependensi
 ```bash
-# Dependensi PHP
 composer install
-
-# Dependensi Frontend
 npm install
 ```
 
 ### 3. Konfigurasi Lingkungan (`.env`)
-Salin file `.env.example` ke `.env`:
+Salin `.env.example` ke `.env`:
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Sesuaikan konfigurasi database PostgreSQL di dalam file `.env`:
+Sesuaikan koneksi PostgreSQL dan rekening transfer di `.env`:
 ```ini
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
@@ -107,103 +100,94 @@ DB_PORT=5432
 DB_DATABASE=bersihin
 DB_USERNAME=postgres
 DB_PASSWORD=secret
+
+BANK_NAMA=BCA
+BANK_NOMOR=7000123456
+BANK_ATAS_NAMA=Bersihin
 ```
 
-### 4. Migrasi & Seeder Database
-Pastikan database dengan nama `bersihin` sudah dibuat di PostgreSQL Anda, lalu jalankan:
+### 4. Migrasi dan Seeder Database
+Pastikan database `bersihin` sudah dibuat di PostgreSQL, lalu jalankan:
 ```bash
-php artisan migrate --seed
+php artisan migrate:fresh --seed
 ```
 
 ### 5. Hubungkan Direktori Storage
-Perintah ini wajib dijalankan agar berkas unggahan bukti transfer dan foto profil dapat diakses:
+Jalankan perintah berikut agar unggahan foto profil dan bukti bayar dapat diakses melalui `public/storage`:
 ```bash
 php artisan storage:link
 ```
 
 ### 6. Jalankan Server Pengembangan
-Buka dua terminal terpisah:
 ```bash
-# Terminal 1: Laravel Backend
 php artisan serve
-
-# Terminal 2: Vite Asset Bundler
-npm run dev
 ```
+*(Jika perlu membangun atau memantau aset `resources/css/app.css`, jalankan `npm run dev` di terminal terpisah. Sebagian besar tampilan utama menggunakan berkas statis `public/css/bersihin.css`.)*
 
 Buka browser dan akses: **[http://localhost:8000](http://localhost:8000)**
 
 ---
 
-## 🗄️ Struktur Database
+## Struktur Database
 
-Aplikasi menggunakan skema relasional di PostgreSQL:
-- **`users`**: Menyimpan akun pengguna, peran (`admin`, `petugas`, `pelanggan`), status verifikasi petugas, dan path foto profil.
+Skema relasional di PostgreSQL terdiri dari tabel utama berikut:
+- **`users`**: Data akun pengguna, peran (`admin`, `petugas`, `pelanggan`), status verifikasi petugas, dan path foto profil.
 - **`paket_layanan`**: Daftar katalog paket kebersihan, deskripsi, estimasi durasi, dan harga.
-- **`pesanan`**: Transaksi pemesanan dengan relasi ke pelanggan, petugas, paket, alamat, waktu mulai, dan status kerja.
-- **`pembayaran`**: Metode pembayaran (transfer/tunai), file bukti transfer, dan status konfirmasi.
-- **`ulasan`**: Rating bintang 1–5 dan ulasan teks dari pelanggan terhadap pesanan yang telah selesai.
+- **`pesanan`**: Transaksi pemesanan dengan relasi ke pelanggan, petugas, paket, alamat, waktu mulai, durasi, dan status kerja.
+- **`pembayaran`**: Metode pembayaran (`transfer`/`tunai`), path bukti bayar, dan status konfirmasi.
+- **`ulasan`**: Rating bintang 1-5 dan ulasan teks dari pelanggan untuk pesanan yang telah selesai.
 
 ---
 
-## 🔑 Akun Demo / Testing
+## Akun Demo / Testing
 
-Setelah menjalankan `php artisan migrate --seed`, akun demo siap pakai:
+Setelah menjalankan `php artisan migrate:fresh --seed`, akun berikut siap dipakai:
 
 | Role | Email | Kata Sandi | Keterangan |
-|------|-------|------------|------------|
+|---|---|---|---|
 | **Admin** | `admin@bersihin.id` | `password` | Akses penuh dashboard admin |
 | **Petugas** | `petugas@bersihin.id` | `password` | Status telah diverifikasi |
 | **Pelanggan** | `pelanggan@bersihin.id` | `password` | Akun pelanggan aktif |
 
 ---
 
-## 🧪 Menjalankan Automated Tests
+## Menjalankan Automated Tests
 
-Aplikasi dilengkapi pengujian fitur otomatis (Feature & Unit Tests) yang mencakup alur pembayaran, validasi berkas, autentikasi, dan responsivitas endpoint:
+Jalankan suite pengujian Laravel dengan:
 
 ```bash
 php artisan test
 ```
 
-Contoh output pengujian:
-```text
-PASS  Tests\Unit\ExampleTest
-PASS  Tests\Feature\ExampleTest
-PASS  Tests\Feature\PembayaranTest (11 test case)
-
-Tests: 13 passed (39 assertions)
-Duration: ~0.60s
-```
-
 ---
 
-## 📁 Struktur Proyek Kunci
+## Struktur Proyek Kunci
 
-```
+```text
 Bersihin/
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/        # Controller Admin, Petugas, Pelanggan, Auth, Profil
-│   │   ├── Middleware/         # EnsureRole (Proteksi role berlapis)
+│   │   ├── Middleware/         # EnsureRole (proteksi role berlapis)
 │   │   └── Requests/           # Form Requests validasi terpusat
-│   └── Models/                 # Eloquent Models (User, Pesanan, Paket, Pembayaran, Ulasan)
+│   └── Models/                 # Eloquent Models (User, Pesanan, PaketLayanan, Pembayaran, Ulasan)
+├── config/
+│   └── bersihin.php            # Konfigurasi rekening bank aplikasi
 ├── database/
-│   ├── migrations/             # Skema tabel database PostgreSQL
-│   └── seeders/                # Data awal & dummy
+│   ├── migrations/             # Skema dan constraint tabel database
+│   └── seeders/                # Data awal pengguna demo dan paket layanan
 ├── public/
-│   ├── css/bersihin.css        # Token desain resmi aplikasi
-│   └── storage/                # Symlink berkas upload (foto & bukti transfer)
+│   ├── css/bersihin.css        # Token desain utama aplikasi
+│   ├── img/                    # Gambar pratinjau landing page
+│   └── storage/                # Symlink berkas unggahan (foto profil dan bukti transfer)
 ├── resources/
 │   └── views/
 │       ├── layouts/            # Layout responsif (pelanggan, petugas, admin, auth)
 │       ├── pelanggan/          # Beranda, Pesanan, Ulasan, Profil
-│       ├── petugas/            # Dashboard, Pesanan masuk, Pesanan saya
-│       ├── admin/              # Paket, Verifikasi petugas, Pembayaran, Pesanan
-│       ├── auth/               # Login & Register
-│       └── welcome.blade.php   # Landing page konversi tinggi
+│       ├── petugas/            # Dashboard, Pesanan masuk, Pesanan saya, Profil
+│       ├── admin/              # Beranda, Paket, Verifikasi petugas, Pembayaran, Pesanan, Profil
+│       ├── auth/               # Login dan Register
+│       └── welcome.blade.php   # Halaman depan (landing page)
 └── routes/
     └── web.php                 # Rute web terorganisir per role
 ```
-
----

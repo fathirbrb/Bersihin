@@ -66,7 +66,7 @@ class PelangganUlasanController extends Controller
         if ($pesanan->ulasan) {
             return redirect()
                 ->route('pelanggan.ulasan.index')
-                ->with('error', 'Anda sudah memberikan ulasan untuk pesanan ini.');
+                ->with('error', 'Kamu sudah memberikan ulasan untuk pesanan ini.');
         }
 
         Ulasan::create([

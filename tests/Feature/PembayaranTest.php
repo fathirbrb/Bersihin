@@ -53,7 +53,7 @@ class PembayaranTest extends TestCase
         $response = $this->actingAs($this->pelanggan)->get(route('pelanggan.pesanan.show', $this->pesanan->id));
 
         $response->assertStatus(200);
-        $response->assertSee('💳 Pembayaran');
+        $response->assertSee('Pembayaran');
         $response->assertSee('Total yang harus dibayar');
         $response->assertSee('Rp150.000');
         $response->assertSee('Transfer');
@@ -230,7 +230,7 @@ class PembayaranTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('transfer');
-        $response->assertSee('menunggu');
+        $response->assertSee('Menunggu');
         $response->assertSee('Bukti Pembayaran');
         $response->assertDontSee('Kirim Pembayaran');
     }

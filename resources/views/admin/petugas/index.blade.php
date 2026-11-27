@@ -5,7 +5,7 @@
 @section('content')
     <div class="kepala">
         <h1>Petugas<span class="sr"> - Verifikasi Petugas</span></h1>
-        <p>{{ $petugas->count() }} terdaftar, {{ $petugasMenungguCount }} nunggu dicek</p>
+        <p>{{ $petugas->count() }} terdaftar, {{ $petugasMenungguCount }} menunggu dicek</p>
     </div>
 
     @if($petugas->isEmpty())

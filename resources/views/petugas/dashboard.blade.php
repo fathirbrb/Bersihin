@@ -54,7 +54,7 @@
 
     {{-- Ringkasan singkat dalam satu baris --}}
     <div class="ringkas">
-        <span><b>{{ $jumlahPesananMasuk }}</b> pesanan nunggu diambil</span>
+        <span><b>{{ $jumlahPesananMasuk }}</b> pesanan menunggu diambil</span>
         <span><b>{{ $jumlahDikerjakan }}</b> sedang jalan</span>
         <span><b>{{ $jumlahSelesai }}</b> sudah beres</span>
         <span>Rating <b>{{ $rataRating ? number_format($rataRating, 1, ',', '.') : '-' }}</b></span>

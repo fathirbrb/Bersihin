@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * EnsureRole — middleware terpusat pengecekan role.
+ * EnsureRole: middleware terpusat pengecekan role.
  * Menggantikan cekPetugas(), cekPelanggan() di controller lama.
  *
  * Pemakaian: ->middleware('role:admin') / 'role:petugas' / 'role:pelanggan'

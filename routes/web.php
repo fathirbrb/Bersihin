@@ -9,11 +9,7 @@ use App\Http\Controllers\PelangganUlasanController;
 use App\Http\Controllers\PetugasController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Redirect root ke login atau dashboard sesuai role
-|--------------------------------------------------------------------------
-*/
+// Redirect root ke login atau dashboard sesuai role
 Route::get('/', function () {
     if (auth()->check()) {
         return match (auth()->user()->role) {
@@ -29,11 +25,7 @@ Route::get('/', function () {
     return view('welcome', compact('paketLayanan'));
 })->name('landing');
 
-/*
-|--------------------------------------------------------------------------
-| Auth: Login, Registrasi, Logout  (F-01)
-|--------------------------------------------------------------------------
-*/
+// Auth: Login, Registrasi, Logout
 Route::middleware('guest')->group(function () {
     Route::get('/login',    [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login',   [AuthController::class, 'login'])->name('login.post');
@@ -53,11 +45,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::post('/keluar', [AuthController::class, 'logout'])
     ->middleware('auth');
 
-/*
-|--------------------------------------------------------------------------
-| Petugas — auth + role:petugas
-|--------------------------------------------------------------------------
-*/
+// Petugas: auth + role:petugas
 Route::middleware(['auth', 'role:petugas'])
     ->prefix('petugas')
     ->name('petugas.')
@@ -75,11 +63,7 @@ Route::middleware(['auth', 'role:petugas'])
         Route::put('/profil/password',       [PetugasController::class, 'updatePassword'])->name('profil.password');
     });
 
-/*
-|--------------------------------------------------------------------------
-| Pelanggan — auth + role:pelanggan
-|--------------------------------------------------------------------------
-*/
+// Pelanggan: auth + role:pelanggan
 Route::middleware(['auth', 'role:pelanggan'])
     ->prefix('pelanggan')
     ->name('pelanggan.')
@@ -110,11 +94,7 @@ Route::middleware(['auth', 'role:pelanggan'])
         Route::put('/profil/password',                      [PelangganProfilController::class, 'updatePassword'])->name('profil.password');
     });
 
-/*
-|--------------------------------------------------------------------------
-| Admin — auth + role:admin
-|--------------------------------------------------------------------------
-*/
+// Admin: auth + role:admin
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')

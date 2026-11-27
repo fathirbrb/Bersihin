@@ -24,7 +24,7 @@
         {{-- Pesanan yang masih harus dikerjakan --}}
         <h2 class="bagian">Sedang jalan</h2>
         @if($berjalan->isEmpty())
-            <p style="color:var(--tinta-2);">Nggak ada kerjaan yang lagi jalan.</p>
+            <p style="color:var(--tinta-2);">Tidak ada kerjaan yang sedang berjalan.</p>
         @else
             <div class="daftar">
                 @foreach($berjalan as $item)

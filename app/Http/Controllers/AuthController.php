@@ -11,7 +11,7 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    // ─── Login ────────────────────────────────────────────────────────────
+    // Login
 
     public function showLogin(): View
     {
@@ -42,7 +42,7 @@ class AuthController extends Controller
         return $this->redirectBerdasarkanRole(Auth::user());
     }
 
-    // ─── Registrasi ───────────────────────────────────────────────────────
+    // Registrasi
 
     public function showRegister(): View
     {
@@ -90,7 +90,7 @@ class AuthController extends Controller
         return $this->redirectBerdasarkanRole($user);
     }
 
-    // ─── Logout ───────────────────────────────────────────────────────────
+    // Logout
 
     public function logout(Request $request): RedirectResponse
     {
@@ -101,7 +101,7 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Kamu berhasil keluar.');
     }
 
-    // ─── Helper: redirect ke dashboard sesuai role ────────────────────────
+    // Redirect ke beranda sesuai role
 
     private function redirectBerdasarkanRole(User $user): RedirectResponse
     {
