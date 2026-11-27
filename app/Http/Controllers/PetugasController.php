@@ -287,17 +287,16 @@ class PetugasController extends Controller
     {
         $tanggal = $pesanan->tanggal->format('Y-m-d');
         $mulai = Carbon::parse($tanggal . ' ' . $pesanan->jam_mulai);
-        $selesai = $mulai->copy()->addHours($pesanan->paketLayanan->estimasi_durasi_jam);
+        $selesai = $mulai->copy()->addHours($pesanan->durasi_jam);
 
-        $jadwalLain = Pesanan::with('paketLayanan')
-            ->where('petugas_id', Auth::id())
+        $jadwalLain = Pesanan::where('petugas_id', Auth::id())
             ->whereDate('tanggal', $tanggal)
             ->whereIn('status', ['diterima', 'dikerjakan'])
             ->get();
 
         foreach ($jadwalLain as $item) {
             $mulaiLain = Carbon::parse($tanggal . ' ' . $item->jam_mulai);
-            $selesaiLain = $mulaiLain->copy()->addHours($item->paketLayanan->estimasi_durasi_jam);
+            $selesaiLain = $mulaiLain->copy()->addHours($item->durasi_jam);
 
             if ($mulai < $selesaiLain && $selesai > $mulaiLain) {
                 return true;

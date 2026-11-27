@@ -72,6 +72,7 @@ class PelangganPesananController extends Controller
             'alamat'           => $request->alamat,
             'tanggal'          => $request->tanggal,
             'jam_mulai'        => $request->jam_mulai,
+            'durasi_jam'       => $paket->estimasi_durasi_jam,
             'catatan'          => $request->catatan,
             'total_harga'      => $paket->harga,
             'status'           => 'menunggu',

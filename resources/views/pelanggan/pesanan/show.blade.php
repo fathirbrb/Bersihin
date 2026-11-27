@@ -10,8 +10,7 @@
 
 @php
     $mulaiCarbon = \Carbon\Carbon::parse($pesanan->tanggal->format('Y-m-d') . ' ' . $pesanan->jam_mulai);
-    $durasi = $pesanan->paketLayanan->estimasi_durasi_jam ?? 2;
-    $selesaiCarbon = $mulaiCarbon->copy()->addHours($durasi);
+    $selesaiCarbon = $mulaiCarbon->copy()->addHours($pesanan->durasi_jam);
 
     $step = match($pesanan->status) {
         'menunggu' => 1,

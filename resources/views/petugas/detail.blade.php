@@ -4,7 +4,7 @@
 
 @section('content')
     @php
-        $durasi = $pesanan->paketLayanan->estimasi_durasi_jam ?? 0;
+        $durasi = $pesanan->durasi_jam;
         $mulai = str_replace(':', '.', substr($pesanan->jam_mulai, 0, 5));
         $selesai = \Carbon\Carbon::parse($pesanan->jam_mulai)->addHours($durasi)->format('H.i');
         $milikSaya = $pesanan->petugas_id == Auth::id();

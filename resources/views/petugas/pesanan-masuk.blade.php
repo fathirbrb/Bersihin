@@ -19,7 +19,7 @@
             {{-- Pesanan terdekat jadi kartu fokus --}}
             <div class="kartu {{ $loop->first ? 'kartu-fokus' : '' }}">
                 <div class="atas">
-                    <p class="paket">{{ $item->paketLayanan->nama_paket ?? '-' }} · {{ $item->paketLayanan->estimasi_durasi_jam ?? '-' }} jam</p>
+                    <p class="paket">{{ $item->paketLayanan->nama_paket ?? '-' }} · {{ $item->durasi_jam }} jam</p>
                     <span class="angka" style="font-weight:600;">Rp{{ number_format($item->total_harga, 0, ',', '.') }}</span>
                 </div>
                 <p class="{{ $loop->first ? 'jam' : 'jam-kecil' }}">{{ str_replace(':', '.', substr($item->jam_mulai, 0, 5)) }}</p>

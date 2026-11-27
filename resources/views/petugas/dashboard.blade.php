@@ -27,7 +27,7 @@
         @php $p = $pesananBerikutnya; @endphp
         <div class="kartu kartu-fokus">
             <div class="atas">
-                <p class="paket">{{ $p->paketLayanan->nama_paket ?? '-' }} · {{ $p->paketLayanan->estimasi_durasi_jam ?? '-' }} jam</p>
+                <p class="paket">{{ $p->paketLayanan->nama_paket ?? '-' }} · {{ $p->durasi_jam }} jam</p>
                 @include('petugas.partials.status', ['status' => $p->status])
             </div>
             <p class="jam">{{ str_replace(':', '.', substr($p->jam_mulai, 0, 5)) }}</p>

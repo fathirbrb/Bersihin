@@ -42,6 +42,7 @@ class PembayaranTest extends TestCase
             'alamat' => 'Jl. Merdeka No. 45',
             'tanggal' => now()->addDay()->format('Y-m-d'),
             'jam_mulai' => '09:00',
+            'durasi_jam' => 3,
             'catatan' => 'Harap tepat waktu',
             'total_harga' => 150000,
             'status' => 'menunggu',

@@ -38,7 +38,7 @@
             @endphp
             <div class="kartu kartu-fokus">
                 <div class="atas">
-                    <p class="paket">{{ $pesananAktif->paketLayanan->nama_paket ?? 'Layanan' }} · {{ $pesananAktif->paketLayanan->estimasi_durasi_jam ?? 0 }} jam</p>
+                    <p class="paket">{{ $pesananAktif->paketLayanan->nama_paket ?? 'Layanan' }} · {{ $pesananAktif->durasi_jam }} jam</p>
                     <span class="status s-jalan">
                         <span class="m" aria-hidden="true">
                             <i class="{{ $step >= 1 ? 'on' : '' }}"></i>
