@@ -75,7 +75,7 @@ class AdminController extends Controller
         return $this->simpanSandi($request, 'admin.profil');
     }
 
-    // verif petugas F-02
+    // Verifikasi petugas
     public function indexPetugas()
     {
         $petugas = User::where('role', 'petugas')
@@ -107,7 +107,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', $pesan);
     }
 
-    // kelola harga dan deskripsi F-03
+    // Kelola harga dan deskripsi paket
     public function indexPaket()
     {
         $paketLayanan = PaketLayanan::all();
@@ -130,7 +130,7 @@ class AdminController extends Controller
         return redirect()->route('admin.paket.index')->with('success', 'Paket disimpan.');
     }
 
-    // lihat daftar seluruh pesanan F-09
+    // Daftar seluruh pesanan
     public function indexPesanan()
     {
         $pesanan = Pesanan::with(['pelanggan', 'petugas', 'paketLayanan', 'pembayaran', 'ulasan'])
@@ -149,7 +149,7 @@ class AdminController extends Controller
         return view('admin.pesanan', compact('pesanan', 'countStatus'));
     }
 
-    // konfirmasi pembayaran F-07
+    // Konfirmasi pembayaran
     public function indexPembayaran()
     {
         $pembayaran = Pembayaran::with(['pesanan.pelanggan', 'pesanan.paketLayanan'])

@@ -6,7 +6,7 @@
     <div class="kepala">
         <h1>Pembayaran<span class="sr"> - Konfirmasi Pembayaran</span></h1>
         @if($pembayaranMenungguCount > 0)
-            <p>{{ $pembayaranMenungguCount }} nunggu konfirmasi</p>
+            <p>{{ $pembayaranMenungguCount }} menunggu konfirmasi</p>
         @else
             <p>Semua sudah dikonfirmasi</p>
         @endif

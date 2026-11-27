@@ -61,7 +61,7 @@
             </table>
         </div>
         <div class="kosong" id="tabel-kosong" hidden style="padding:28px 20px;">
-            <b>Nggak ada pesanan di status ini</b>
+            <b>Tidak ada pesanan di status ini</b>
         </div>
     @endif
 @endsection

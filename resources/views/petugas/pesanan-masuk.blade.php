@@ -5,7 +5,7 @@
 @section('content')
     <div class="kepala">
         <h1>Pesanan masuk</h1>
-        <p>{{ $pesanan->count() }} pesanan nunggu diambil</p>
+        <p>{{ $pesanan->count() }} pesanan menunggu diambil</p>
     </div>
 
     @if($pesanan->isEmpty())

@@ -41,7 +41,7 @@
                     <button type="button" class="btn btn-teks bahaya" onclick="document.getElementById('dialog-hapus-{{ $item->id }}').showModal()" style="min-height:32px;padding:0 6px;">Hapus</button>
                 </div>
                 <div style="margin-top:4px;">
-                    <span class="status s-beres">⭐ {{ $item->rating }}/5</span>
+                    <span class="status s-beres">Rating {{ $item->rating }}/5</span>
                 </div>
                 @if($item->komentar)
                     <p style="margin-top:10px;">{{ $item->komentar }}</p>
@@ -51,11 +51,11 @@
 
             <dialog id="dialog-hapus-{{ $item->id }}" aria-labelledby="judul-hapus-{{ $item->id }}">
                 <h2 id="judul-hapus-{{ $item->id }}">Hapus ulasan ini?</h2>
-                <p>Ulasan yang dihapus nggak bisa dibalikin.</p>
+                <p>Ulasan yang dihapus tidak bisa dikembalikan.</p>
                 <form action="{{ route('pelanggan.ulasan.destroy', $item->id) }}" method="POST" class="aksi">
                     @csrf
                     @method('DELETE')
-                    <button type="button" class="btn btn-teks" onclick="document.getElementById('dialog-hapus-{{ $item->id }}').close()">Nggak jadi</button>
+                    <button type="button" class="btn btn-teks" onclick="document.getElementById('dialog-hapus-{{ $item->id }}').close()">Tidak jadi</button>
                     <button type="submit" class="btn btn-bahaya btn-kecil">Ya, hapus</button>
                 </form>
             </dialog>

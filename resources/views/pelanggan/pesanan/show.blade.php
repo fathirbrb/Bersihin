@@ -28,6 +28,9 @@
         default => ucfirst($pesanan->status),
     };
     $percent = $step * 25;
+
+    $bank = config('bersihin.bank');
+    $rekeningSiap = filled($bank['nama']) && filled($bank['nomor']) && filled($bank['atas_nama']);
 @endphp
 
 <div class="kepala">
@@ -78,7 +81,7 @@
 
     @if($pesanan->status !== 'dibatalkan')
         <section>
-            <h2 class="bagian" id="bayar">💳 Pembayaran</h2>
+            <h2 class="bagian" id="bayar">Pembayaran</h2>
 
             @if($pesanan->pembayaran)
                 <div class="daftar">
@@ -86,7 +89,7 @@
                         <span>
                             <span class="judul-baris" style="text-transform: capitalize;">{{ $pesanan->pembayaran->metode }}</span>
                             <span class="sub-baris">
-                                Status: {{ $pesanan->pembayaran->status }}
+                                Status: {{ ucfirst($pesanan->pembayaran->status) }}
                                 @if($pesanan->pembayaran->bukti_bayar)
                                     · <a href="{{ route('bukti-bayar', $pesanan->pembayaran->id) }}" target="_blank" style="text-decoration:underline;">Bukti Pembayaran</a>
                                 @endif
@@ -124,7 +127,11 @@
                         </fieldset>
 
                         <div class="isian" id="isian-bukti">
-                            <p class="sub-baris">Rekening: <b style="color:var(--tinta);">BCA 1234567890 a.n. Bersihin</b></p>
+                            @if($rekeningSiap)
+                                <p class="sub-baris">Rekening: <b style="color:var(--tinta);">{{ $bank['nama'] }} {{ $bank['nomor'] }} a.n. {{ $bank['atas_nama'] }}</b></p>
+                            @else
+                                <p class="sub-baris">Rekening belum diatur, hubungi admin.</p>
+                            @endif
                             <p class="judul-isian">Upload Bukti Pembayaran</p>
                             <div class="berkas">
                                 <label class="btn btn-kedua btn-kecil pilih-berkas">
@@ -145,7 +152,7 @@
                 @if($pesanan->ulasan)
                     <div class="kartu">
                         <div class="atas">
-                            <span class="status s-beres">⭐ {{ $pesanan->ulasan->rating }}/5</span>
+                            <span class="status s-beres">Rating {{ $pesanan->ulasan->rating }}/5</span>
                         </div>
                         @if($pesanan->ulasan->komentar)
                             <p style="margin-top:12px;">{{ $pesanan->ulasan->komentar }}</p>
@@ -167,10 +174,10 @@
 @if($pesanan->status === 'menunggu')
     <dialog id="dialog-batal" aria-labelledby="judul-batal">
         <h2 id="judul-batal">Batalkan pesanan ini?</h2>
-        <p>Pesanan yang dibatalkan nggak bisa dibalikin.</p>
+        <p>Pesanan yang dibatalkan tidak bisa dikembalikan.</p>
         <form action="{{ route('pelanggan.pesanan.batalkan', $pesanan->id) }}" method="POST" class="aksi">
             @csrf
-            <button type="button" class="btn btn-teks" onclick="document.getElementById('dialog-batal').close()">Nggak jadi</button>
+            <button type="button" class="btn btn-teks" onclick="document.getElementById('dialog-batal').close()">Tidak jadi</button>
             <button type="submit" class="btn btn-bahaya btn-kecil">Ya, batalkan</button>
         </form>
     </dialog>
