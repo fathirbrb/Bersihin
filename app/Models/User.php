@@ -43,11 +43,6 @@ class User extends Authenticatable
         return $this->hasMany(Pesanan::class, 'petugas_id');
     }
 
-    public function isRole(string $role): bool
-    {
-        return $this->role === $role;
-    }
-
     public function dashboardRouteName(): ?string
     {
         return match ($this->role) {

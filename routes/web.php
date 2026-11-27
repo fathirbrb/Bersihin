@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PelangganPembayaranController;
 use App\Http\Controllers\PelangganPesananController;
 use App\Http\Controllers\PelangganProfilController;
@@ -14,20 +15,7 @@ use Illuminate\Support\Facades\Route;
 | Redirect root ke login atau dashboard sesuai role
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    if (auth()->check()) {
-        return match (auth()->user()->role) {
-            'admin'     => redirect()->route('admin.beranda'),
-            'petugas'   => redirect()->route('petugas.dashboard'),
-            'pelanggan' => redirect()->route('pelanggan.beranda'),
-            default     => redirect()->route('login'),
-        };
-    }
-    $paketLayanan = \Illuminate\Support\Facades\Schema::hasTable('paket_layanan')
-        ? \App\Models\PaketLayanan::orderBy('harga')->get()
-        : collect();
-    return view('welcome', compact('paketLayanan'));
-})->name('landing');
+Route::get('/', LandingController::class)->name('landing');
 
 /*
 |--------------------------------------------------------------------------
@@ -39,19 +27,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/login',   [AuthController::class, 'login'])->name('login.post');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register',[AuthController::class, 'register'])->name('register.post');
-
-    // Alias berbahasa Indonesia
-    Route::get('/masuk',    [AuthController::class, 'showLogin']);
-    Route::post('/masuk',   [AuthController::class, 'login']);
-    Route::get('/daftar',   [AuthController::class, 'showRegister']);
-    Route::post('/daftar',  [AuthController::class, 'register']);
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
-Route::post('/keluar', [AuthController::class, 'logout'])
-    ->middleware('auth');
 
 Route::get('/bukti-bayar/{pembayaran}', [PelangganPembayaranController::class, 'bukti'])
     ->middleware('auth')
@@ -90,7 +70,6 @@ Route::middleware(['auth', 'role:pelanggan'])
     ->group(function () {
         // Beranda
         Route::get('/',                              [PelangganPesananController::class, 'beranda'])->name('beranda');
-        Route::get('/beranda',                       [PelangganPesananController::class, 'beranda']);
 
         // Pesanan
         Route::get('/pesanan',                              [PelangganPesananController::class, 'index'])->name('pesanan.index');
@@ -125,7 +104,6 @@ Route::middleware(['auth', 'role:admin'])
     ->group(function () {
         // Beranda & Profil
         Route::get('/',                                     [AdminController::class, 'beranda'])->name('beranda');
-        Route::get('/beranda',                              [AdminController::class, 'beranda']);
         Route::get('/profil',                               [AdminController::class, 'profil'])->name('profil');
         Route::put('/profil',                               [AdminController::class, 'updateProfil'])->name('profil.update');
         Route::put('/profil/password',                      [AdminController::class, 'updatePassword'])->name('profil.password');
