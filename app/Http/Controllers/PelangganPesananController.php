@@ -13,17 +13,8 @@ use Illuminate\View\View;
 
 class PelangganPesananController extends Controller
 {
-    private function cekPelanggan(): void
-    {
-        if (Auth::user()->role !== 'pelanggan') {
-            abort(403, 'Hanya pelanggan yang dapat mengakses halaman ini.');
-        }
-    }
-
     public function beranda(): View
     {
-        $this->cekPelanggan();
-
         $pesananAktif = Pesanan::with(['paketLayanan', 'petugas', 'pembayaran'])
             ->where('pelanggan_id', Auth::id())
             ->whereIn('status', ['menunggu', 'diterima', 'dikerjakan'])
@@ -38,8 +29,6 @@ class PelangganPesananController extends Controller
 
     public function index(): View
     {
-        $this->cekPelanggan();
-
         $pesanan = Pesanan::with(['paketLayanan', 'petugas', 'ulasan'])
             ->where('pelanggan_id', Auth::id())
             ->latest('tanggal')
@@ -54,8 +43,6 @@ class PelangganPesananController extends Controller
 
     public function create(Request $request): View
     {
-        $this->cekPelanggan();
-
         $paketLayanan = PaketLayanan::orderBy('harga')->get();
         $selectedPaketId = $request->query('paket');
 
@@ -85,8 +72,6 @@ class PelangganPesananController extends Controller
 
     public function show(int $id): View
     {
-        $this->cekPelanggan();
-
         $pesanan = Pesanan::with(['paketLayanan', 'petugas', 'ulasan', 'pembayaran'])
             ->where('pelanggan_id', Auth::id())
             ->findOrFail($id);
@@ -96,8 +81,6 @@ class PelangganPesananController extends Controller
 
     public function batalkan(int $id): RedirectResponse
     {
-        $this->cekPelanggan();
-
         $pesanan = Pesanan::with('pembayaran')->where('pelanggan_id', Auth::id())->findOrFail($id);
         $pembayaran = $pesanan->pembayaran;
 

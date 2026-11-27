@@ -11,17 +11,8 @@ use Illuminate\View\View;
 
 class PelangganUlasanController extends Controller
 {
-    private function cekPelanggan(): void
-    {
-        if (Auth::user()->role !== 'pelanggan') {
-            abort(403, 'Hanya pelanggan yang dapat mengakses halaman ini.');
-        }
-    }
-
     public function index(): View
     {
-        $this->cekPelanggan();
-
         $belumDiulas = Pesanan::with(['paketLayanan', 'petugas'])
             ->where('pelanggan_id', Auth::id())
             ->where('status', 'selesai')
@@ -41,8 +32,6 @@ class PelangganUlasanController extends Controller
 
     public function create(int $pesananId): View
     {
-        $this->cekPelanggan();
-
         $pesanan = Pesanan::with(['paketLayanan', 'petugas'])
             ->where('pelanggan_id', Auth::id())
             ->where('status', 'selesai')
@@ -82,8 +71,6 @@ class PelangganUlasanController extends Controller
 
     public function destroy(int $id): RedirectResponse
     {
-        $this->cekPelanggan();
-
         $ulasan = Ulasan::whereHas('pesanan', function ($query) {
             $query->where('pelanggan_id', Auth::id());
         })->findOrFail($id);

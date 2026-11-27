@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->enum('role', ['pelanggan', 'petugas', 'admin'])->default('pelanggan');
             // Hanya relevan untuk petugas
             $table->enum('status_verifikasi', ['menunggu', 'terverifikasi', 'ditolak'])->default('menunggu');
+            $table->string('foto')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
