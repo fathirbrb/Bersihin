@@ -23,7 +23,7 @@ class PembayaranTest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake('public');
+        Storage::fake('local');
 
         $this->pelanggan = User::factory()->create([
             'role' => 'pelanggan',
@@ -42,6 +42,7 @@ class PembayaranTest extends TestCase
             'alamat' => 'Jl. Merdeka No. 45',
             'tanggal' => now()->addDay()->format('Y-m-d'),
             'jam_mulai' => '09:00',
+            'durasi_jam' => 3,
             'catatan' => 'Harap tepat waktu',
             'total_harga' => 150000,
             'status' => 'menunggu',
@@ -84,7 +85,7 @@ class PembayaranTest extends TestCase
 
         $pembayaran = Pembayaran::where('pesanan_id', $this->pesanan->id)->first();
         $this->assertNotNull($pembayaran->bukti_bayar);
-        Storage::disk('public')->assertExists($pembayaran->bukti_bayar);
+        Storage::disk('local')->assertExists($pembayaran->bukti_bayar);
     }
 
     public function test_pembayaran_metode_tunai_tanpa_bukti_berhasil(): void

@@ -10,8 +10,7 @@
 
 @php
     $mulaiCarbon = \Carbon\Carbon::parse($pesanan->tanggal->format('Y-m-d') . ' ' . $pesanan->jam_mulai);
-    $durasi = $pesanan->paketLayanan->estimasi_durasi_jam ?? 2;
-    $selesaiCarbon = $mulaiCarbon->copy()->addHours($durasi);
+    $selesaiCarbon = $mulaiCarbon->copy()->addHours($pesanan->durasi_jam);
 
     $step = match($pesanan->status) {
         'menunggu' => 1,
@@ -89,7 +88,7 @@
                             <span class="sub-baris">
                                 Status: {{ $pesanan->pembayaran->status }}
                                 @if($pesanan->pembayaran->bukti_bayar)
-                                    · <a href="{{ asset('storage/' . $pesanan->pembayaran->bukti_bayar) }}" target="_blank" style="text-decoration:underline;">Bukti Pembayaran</a>
+                                    · <a href="{{ route('bukti-bayar', $pesanan->pembayaran->id) }}" target="_blank" style="text-decoration:underline;">Bukti Pembayaran</a>
                                 @endif
                             </span>
                         </span>
@@ -102,10 +101,15 @@
                         @endif
                     </div>
                 </div>
-            @else
-                <div class="kartu">
+            @endif
+
+            @if(! $pesanan->pembayaran || $pesanan->pembayaran->status === 'ditolak')
+                <div class="kartu" @if($pesanan->pembayaran) style="margin-top:12px;" @endif>
                     <form action="{{ route('pelanggan.pembayaran.store', $pesanan->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        @if($pesanan->pembayaran)
+                            <p class="sub-baris" style="margin-bottom:12px;">Pembayaran sebelumnya ditolak. Kirim ulang dengan bukti yang benar.</p>
+                        @endif
                         <p class="sub-baris" style="margin-bottom:12px;">Total yang harus dibayar: <b style="color:var(--tinta);">Rp{{ number_format($pesanan->total_harga, 0, ',', '.') }}</b></p>
                         <fieldset class="pilihan isian">
                             <legend class="sr">Cara bayar</legend>

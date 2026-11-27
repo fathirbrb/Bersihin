@@ -8,6 +8,7 @@ use App\Models\Pesanan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class PelangganPesananController extends Controller
@@ -71,6 +72,7 @@ class PelangganPesananController extends Controller
             'alamat'           => $request->alamat,
             'tanggal'          => $request->tanggal,
             'jam_mulai'        => $request->jam_mulai,
+            'durasi_jam'       => $paket->estimasi_durasi_jam,
             'catatan'          => $request->catatan,
             'total_harga'      => $paket->harga,
             'status'           => 'menunggu',
@@ -96,15 +98,33 @@ class PelangganPesananController extends Controller
     {
         $this->cekPelanggan();
 
-        $pesanan = Pesanan::where('pelanggan_id', Auth::id())->findOrFail($id);
+        $pesanan = Pesanan::with('pembayaran')->where('pelanggan_id', Auth::id())->findOrFail($id);
+        $pembayaran = $pesanan->pembayaran;
 
-        if ($pesanan->status !== 'menunggu') {
+        if ($pembayaran && $pembayaran->status === 'lunas') {
+            return redirect()
+                ->back()
+                ->with('error', 'Pesanan sudah dibayar. Hubungi admin untuk pembatalan.');
+        }
+
+        // Update bersyarat, anti balapan dengan petugas
+        $dibatalkan = DB::transaction(function () use ($pesanan, $pembayaran) {
+            $berubah = Pesanan::where('id', $pesanan->id)
+                ->where('status', 'menunggu')
+                ->update(['status' => 'dibatalkan']);
+
+            if ($berubah && $pembayaran && $pembayaran->status === 'menunggu') {
+                $pembayaran->update(['status' => 'ditolak']);
+            }
+
+            return $berubah;
+        });
+
+        if (! $dibatalkan) {
             return redirect()
                 ->back()
                 ->with('error', 'Pesanan tidak bisa dibatalkan karena sudah diproses.');
         }
-
-        $pesanan->update(['status' => 'dibatalkan']);
 
         return redirect()
             ->route('pelanggan.pesanan.index')

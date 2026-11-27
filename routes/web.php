@@ -53,6 +53,10 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::post('/keluar', [AuthController::class, 'logout'])
     ->middleware('auth');
 
+Route::get('/bukti-bayar/{pembayaran}', [PelangganPembayaranController::class, 'bukti'])
+    ->middleware('auth')
+    ->name('bukti-bayar');
+
 /*
 |--------------------------------------------------------------------------
 | Petugas — auth + role:petugas

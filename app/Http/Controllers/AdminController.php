@@ -290,7 +290,12 @@ class AdminController extends Controller
             'status' => 'required|in:menunggu,lunas,ditolak',
         ]);
 
-        $pembayaran = Pembayaran::findOrFail($id);
+        $pembayaran = Pembayaran::with('pesanan')->findOrFail($id);
+
+        if ($pembayaran->pesanan->status === 'dibatalkan') {
+            return redirect()->back()->with('error', 'Pesanan ini sudah dibatalkan.');
+        }
+
         $pembayaran->update([
             'status' => $request->status,
         ]);

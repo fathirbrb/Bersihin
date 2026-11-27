@@ -37,7 +37,7 @@
                             <td data-label="Bukti">
                                 @if($item->bukti_bayar)
                                     <button type="button" class="btn btn-teks" data-buka="dialog-bukti"
-                                        data-bukti="{{ asset('storage/' . $item->bukti_bayar) }}"
+                                        data-bukti="{{ route('bukti-bayar', $item->id) }}"
                                         data-pesanan="#{{ $item->pesanan_id }}"
                                         data-pelanggan="{{ $item->pesanan->pelanggan->nama ?? '-' }}"
                                         data-total="Rp{{ number_format($item->pesanan->total_harga ?? 0, 0, ',', '.') }}"
