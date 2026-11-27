@@ -20,6 +20,7 @@ class Pesanan extends Model
         'alamat',
         'tanggal',
         'jam_mulai',
+        'durasi_jam',
         'catatan',
         'total_harga',
         'status',
